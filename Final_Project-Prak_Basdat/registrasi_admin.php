@@ -1,4 +1,20 @@
+<?php 
 
+require 'functions.php';
+$conn = mysqli_connect("localhost", "root", "", "peminjaman_pickup_dan_truck_db");
+if (isset($_POST["register"])) {
+  if (ctype_space($_POST["username"]) && ctype_space($_POST["password_akun"])) {
+    echo "<script> alert('Tolong isi data anda dengan benar!'); </script>";
+  } else {
+    $uname = stripslashes($_POST["username"]);
+    $pwd = mysqli_real_escape_string($conn, $_POST["password_akun"]);
+    $hashed_pwd = password_hash($pwd, PASSWORD_DEFAULT);
+    
+    $query = "INSERT INTO admin VALUES('', '$uname', '$hashed_pwd');";
+    mysqli_query($conn, $query);
+  }
+}
+?>
 
 <!doctype html>
 <html lang="en">
@@ -14,7 +30,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a href="index.html" class="navbar-brand ms-3">Pick N Go</a>
+        <a href="index.php" class="navbar-brand ms-3">Pick N Go</a>
         <button class="navbar-toggler me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -24,12 +40,25 @@
                 <li class="nav-item me-5"><a class = "nav-link" href="">Truk</a></li>
                 <li class="nav-item"><a class = "nav-link" href="">Hubungi Kita</a></li>
             </ul>
-            <a class="btn btn-primary btn-dark me-3" href="form_registrasi.php" role="button">Signup</a>
-            <a class="btn btn-primary btn-dark me-3" href="form_login.php" role="button">Login</a>
+            <a class="btn btn-primary btn-dark me-3" href="registrationform.php" role="button">Signup</a>
+            <a class="btn btn-primary btn-dark me-3" href="loginform.php" role="button">Login</a>
         </div>
     </nav>
 
-
+    <h1 class="text-center mb-4 mt-4">Login</h1>
+    <form class="ms-3 me-3" action="#" method="post">
+        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+            <label for="inputUsername" class="form-label">Username</label>
+            <input type="text" class="form-control" id="inputUsername" name="username">
+        </div>
+        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+            <label for="inputPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" id="inputPassword" name="password_akun">
+        </div>
+        <div class="text-center">
+            <button type="submit" name="register" class="btn btn-primary col-sm-4">Register</button>
+        </div>
+    </form>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
