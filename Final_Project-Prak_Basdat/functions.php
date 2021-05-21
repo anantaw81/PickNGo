@@ -152,7 +152,8 @@ function update_driver($record, $img) {
 	$jenis_kelamin_driver = htmlspecialchars($record["jenisKelamin-update"]);
 	$harga = htmlspecialchars($record["harga-driver-update"]);
 	if($img["foto-driver-update"]["error"] == 4) {
-		$query = "UPDATE driver SET nama = '$nama_driver', jenis_kelamin = '$jenis_kelamin_driver', tarif = $harga WHERE ID_driver = $id;";
+		// $query = "UPDATE driver SET nama = '$nama_driver', jenis_kelamin = '$jenis_kelamin_driver', tarif = $harga WHERE ID_driver = $id;";
+		$query = "CALL update_data_driver_tanpa_foto($id, '$nama_driver', '$jenis_kelamin_driver', $harga)";
 	} else {
 		$nama_foto = $img['foto-driver-update']['name'];
 		$tipe_file = $img['foto-driver-update']['type'];
@@ -166,7 +167,8 @@ function update_driver($record, $img) {
 			return false;
 		}
 		move_uploaded_file($file_path_sementara, 'Images/Driver/' . $nama_foto_simpan);
-		$query = "UPDATE driver SET nama = '$nama_driver', jenis_kelamin = '$jenis_kelamin_driver', tarif = $harga, nama_foto = '$nama_foto_simpan' WHERE ID_driver = $id;";
+		$query = "CALL update_data_driver($id, '$nama_driver', '$jenis_kelamin_driver', $harga, '$nama_foto_simpan')";
+		// $query = "UPDATE driver SET nama = '$nama_driver', jenis_kelamin = '$jenis_kelamin_driver', tarif = $harga, nama_foto = '$nama_foto_simpan' WHERE ID_driver = $id;";
 	}
 	if(execute_query($query)){
 		return true;
@@ -181,7 +183,8 @@ function update_helper($record, $img) {
 	$jenis_kelamin_helper = htmlspecialchars($record["jenisKelamin-update"]);
 	$harga = htmlspecialchars($record["harga-helper-update"]);
 	if($img["foto-helper-update"]["error"] == 4) {
-		$query = "UPDATE helper SET nama = '$nama_helper', jenis_kelamin = '$jenis_kelamin_helper', tarif = $harga WHERE ID_helper = $id;";
+		$query = "CALL update_data_helper_tanpa_foto($id, '$nama_helper', '$jenis_kelamin_helper', $harga);";
+		// $query = "UPDATE helper SET nama = '$nama_helper', jenis_kelamin = '$jenis_kelamin_helper', tarif = $harga WHERE ID_helper = $id;";
 	} else {
 		$nama_foto = $img['foto-helper-update']['name'];
 		$tipe_file = $img['foto-helper-update']['type'];
@@ -195,7 +198,8 @@ function update_helper($record, $img) {
 			return false;
 		}
 		move_uploaded_file($file_path_sementara, 'Images/Helper/' . $nama_foto_simpan);
-		$query = "UPDATE helper SET nama = '$nama_helper', jenis_kelamin = '$jenis_kelamin_helper', tarif = $harga, nama_foto = '$nama_foto_simpan' WHERE ID_helper = $id;";
+		$query = "CALL update_data_helper($id, '$nama_helper', '$jenis_kelamin_helper', $harga, '$nama_foto_simpan');";
+		// $query = "UPDATE helper SET nama = '$nama_helper', jenis_kelamin = '$jenis_kelamin_helper', tarif = $harga, nama_foto = '$nama_foto_simpan' WHERE ID_helper = $id;";
 	}
 	if(execute_query($query)){
 		return true;
@@ -352,7 +356,7 @@ function request_peminjaman($record, $id_model) {
 	$jumlah_helper = $record["konfirmasi-helper"];
 	if($_SESSION["status_akun"] === "valid") {
 		if($butuh_driver === "Ya") {
-			$query = "INSERT INTO peminjaman (ID_model_kendaraan, ID_akun, tanggal_peminjaman, tanggal_pengembalian, opsi_driver, jumlah_helper, status_peminjaman) VALUES($id_model, $id_akun, '$tanggal_peminjaman', '$tanggal_pengembalian', '$butuh_driver', $jumlah_helper, 'not accepted yet')";
+			$query = "INSERT INTO peminjaman (ID_model_kendaraan, ID_akun, tanggal_peminjaman, tanggal_pengembalian, opsi_driver, jumlah_helper, status_peminjaman) VALUES($id_model, $id_akun, '$tanggal_peminjaman', '$tanggal_pengembalian', 1, $jumlah_helper, 'not accepted yet')";
 		} else {
 			$query = "INSERT INTO peminjaman (ID_model_kendaraan, ID_akun, tanggal_peminjaman, tanggal_pengembalian, jumlah_helper, status_peminjaman) VALUES($id_model, $id_akun, '$tanggal_peminjaman', '$tanggal_pengembalian', $jumlah_helper, 'not accepted yet')";
 		}
@@ -378,7 +382,7 @@ function accept_peminjaman($record) {
 	}
 
 	// check apakah butuh driver atau tidak
-	if ($status_driver === "Tidak") {
+	if ($status_driver == 0) {
 		$query = "UPDATE peminjaman SET ID_kendaraan = $id_kendaraan, status_peminjaman = 'accepted' WHERE ID_peminjaman = $id_peminjaman;";
 	} else {
 		$id_driver = $record["driver-selection"];
@@ -438,7 +442,6 @@ function uploadBuktiPembayaran($record, $img){
 	}
 	move_uploaded_file($file_path_sementara, 'Images/BuktiPembayaran/' . $nama_foto_simpan);
 	$query = "UPDATE peminjaman SET gambar_bukti_pembayaran = '$nama_foto_simpan' WHERE ID_peminjaman = $id_peminjaman;";
-	echo "<script>alert('$query')</script>";
 	if(execute_query($query)) {
 		return true;
 	} else{
@@ -446,5 +449,71 @@ function uploadBuktiPembayaran($record, $img){
 	}
 }
 
+function update_biodata($record, $id_pelanggan, $nik_pelanggan, $id_akun) {
+	$NIK = $record["update-NIK"];
+	$nama = $record["update-nama"];
+	$alamat = $record["update-alamat"];
+	$kabupaten = $record["update-kabupaten"];
+	$nomor_telepon = $record["update-nomor-telepon"];
+	$jenis_kelamin = $record["update-jenis-kelamin"];
+	if($nik_pelanggan!=$NIK) {
+		if(check_NIK($NIK) > 0) {
+			return false;
+		}
+		$query = "UPDATE pelanggan SET NIK = '$NIK', nama = '$nama', alamat = '$alamat', kabupaten = '$kabupaten', jenis_kelamin = '$jenis_kelamin', nomor_telepon = '$nomor_telepon' WHERE ID_pelanggan = $id_pelanggan; UPDATE akun_pelanggan SET status_akun = 'not verified' WHERE ID_akun = $id_akun;";
+	} else {
+		$query = "UPDATE pelanggan SET nama = '$nama', alamat = '$alamat', kabupaten = '$kabupaten', jenis_kelamin = '$jenis_kelamin', nomor_telepon = '$nomor_telepon' WHERE ID_pelanggan = $id_pelanggan;";
+	}
+	if(execute_multi_query($query)) {
+		return true;
+	} else{
+		return false;
+	}
+}
+
+function update_username($record, $password, $id_akun) {
+	global $conn;
+	$username_baru = stripslashes($record["update-username"]);
+	$pwd_input = mysqli_real_escape_string($conn, $record["update-password-konfirmasi"]);
+	if (password_verify($pwd_input, $password)) {
+		if(check_username($username_baru, "akun_pelanggan") > 0){
+			return 1;
+		}
+		$query = "UPDATE akun_pelanggan SET username = '$username_baru' WHERE ID_akun = $id_akun;";
+		if(execute_query($query)) {
+			return 0;
+		} else{
+			return 3;
+		}
+	} else {
+		return 2;
+	}
+}
+
+
+function update_password($record, $password, $id_akun){
+	global $conn;
+	$pwd_sekarang = mysqli_real_escape_string($conn, $record["update-password-sekarang"]);
+	$pwd_baru = mysqli_real_escape_string($conn, $record["update-password-baru"]);
+	$pwd_konfirmasi_baru = mysqli_real_escape_string($conn, $record["update-konfirmasi-password-baru"]);
+	// check password lama sesuai atau tidak
+	if (password_verify($pwd_sekarang, $password)) {
+		// check kesamaan password baru dan password konfirmasi
+		if ($pwd_baru == $pwd_konfirmasi_baru) {
+			$hashed_pwd = password_hash($pwd_baru, PASSWORD_DEFAULT);
+			$query = "UPDATE akun_pelanggan SET password_pelanggan = '$hashed_pwd' WHERE ID_akun = $id_akun;";
+			if(execute_query($query)) {
+				return 4;
+			} else{
+				return 3;
+			}
+		} else {
+			return 2;
+		}
+	} else {
+		return 1;
+	}
+	
+}
 
 ?>

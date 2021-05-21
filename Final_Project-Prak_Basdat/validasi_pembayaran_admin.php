@@ -6,7 +6,7 @@
 		exit;
 	}
   
-  $tuples = read("SELECT * FROM request_peminjaman WHERE gambar_bukti_pembayaran != '' AND status_peminjaman='accepted';");
+  $tuples = read("SELECT * FROM request_peminjaman WHERE (gambar_bukti_pembayaran != '' AND status_peminjaman='accepted') OR status_peminjaman='not valid payment';");
 
   if(isset($_POST["submit-pembayaran-valid"])){
     $payment_validation_status = payment_validation($_POST["ID-pembayaran-valid"], 'paid');
@@ -90,8 +90,7 @@
                         <th>Model Kendaraan</th>
                         <th>Tanggal Peminjaman</th>
                         <th>Tanggal Pengembalian</th>
-                        <th>Opsi Driver</th>
-                        <th>Jumlah Helper</th>
+                        <th>Harga Peminjaman</th>
                         <th>Aksi</th>
                     </thead>
                     <tbody class="text-center">
@@ -109,8 +108,7 @@
                             <td><?= $tuple["model"] ?></td>
                             <td><?= $tuple["tanggal_peminjaman"] ?></td>
                             <td><?= $tuple["tanggal_pengembalian"] ?></td>
-                            <td><?= $tuple["opsi_driver"] ?></td>
-                            <td><?= $tuple["jumlah_helper"] ?></td>
+                            <td><?= $tuple["harga_peminjaman"] ?></td>
                             <td><a class="btn btn-primary mx-1 mt-1 mb-1" href="#" role="button" onclick="showImg('<?= $tuple['gambar_bukti_pembayaran'] ?>')">Lihat</a><a class="btn btn-success mx-1 mt-1 mb-1" href="#" role="button" onclick="showAcceptModal('<?= $tuple['ID_peminjaman'] ?>')">Terima</a>
                             <a class="btn btn-danger mt-1 mb-1" href="#" role="button" onclick="showDeclineModal('<?= $tuple['ID_peminjaman'] ?>')">Tolak</a></td>
                         </tr>

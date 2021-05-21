@@ -40,7 +40,7 @@
     <input type="checkbox" id="hamburger-menu">
   	<nav>
   		<a href="index.php" class="logo">Pick N Go</a>
-  		<button type="button" id = "logout-button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  		<button type="button" id = "logout-button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLogout">
         Logout
       </button>
   		<label for="hamburger-menu" class="hamburger"><i class="fa fa-bars"></i></label>
@@ -50,11 +50,11 @@
   		<h2>
   			<?= $_SESSION["username"]?>
   		</h2>
-  		<a href="#"><i class="fa fa-user"></i><span>Profil</span></a>
+  		<a href="profil_user.php"><i class="fa fa-user"></i><span>Profil</span></a>
   		<a href="beranda_user.php"><i class="fa fa-truck"></i><span>Beranda</span></a>
   		<a href="request_peminjaman_user.php" style="background-color: #b34509;"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="list_peminjaman_user.php"><i class = "fa fa-credit-card-alt"></i><span>List Peminjaman</span></a>
-  		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>Logout</span></a>
+  		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
   	</div>
 
     <div class = "content">
@@ -110,6 +110,7 @@
                                     <p class="card-text">Driver: <?= $tuple["opsi_driver"] ?></p>
                                     <p class="card-text">Jumlah Helper: <?= $tuple["jumlah_helper"] ?></p>
                                     <p class="card-text">Status: <?= $status ?> </p>
+                                    <p class="card-text">Total Harga: Rp<?= $tuple["harga_peminjaman"] ?></p>
                                 </div>
                             </div>
                             <?php if(is_null($tuple["gambar_bukti_pembayaran"])): ?>
@@ -156,6 +157,24 @@
         </div>
       </div>
     </div>
+
+    <div class="modal" id="modalLogout" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Konfirmasi Logout</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Apakah anda yakin akan logout?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+              <a href="logoutlogic.php" class="btn btn-danger">Logout</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <!-- JAVASCRIPT --> 
     <script type="text/javascript">

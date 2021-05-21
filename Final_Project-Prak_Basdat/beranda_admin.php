@@ -63,7 +63,7 @@
   		<a href="beranda_admin.php" style="background-color: #b34509;"><i class="fa fa-truck"></i><span>List Kendaraan</span></a>
   		<a href="list_driver_admin.php"><i class = "fa fa-address-book"></i><span>List Driver</span></a>
   		<a href="list_helper_admin.php"><i class = "fa fa-address-book-o"></i><span>List Helper</span></a>
-  		<a href="request_pemesanan_admin.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
+  		<a href="request_peminjaman_admin.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="validasi_user_admin.php"><i class = "fa fa-check-circle"></i><span>Validasi Pengguna</span></a>
       <a href="validasi_pembayaran_admin.php"><i class = "fa fa-money"></i><span>Validasi Pembayaran</span></a>
   		<a href="list_peminjaman_admin.php"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>

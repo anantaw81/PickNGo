@@ -72,7 +72,7 @@
   		<a href="request_peminjaman_admin"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="validasi_user_admin.php"><i class = "fa fa-check-circle"></i><span>Validasi Pengguna</span></a>
       <a href="validasi_pembayaran_admin.php"><i class = "fa fa-money"></i><span>Validasi Pembayaran</span></a>
-  		<a href=""><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
+  		<a href="list_peminjaman_admin.php"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
   		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
   	</div>
 

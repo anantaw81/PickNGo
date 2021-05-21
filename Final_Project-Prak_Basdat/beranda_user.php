@@ -35,7 +35,7 @@ if(!isset($_SESSION["login_pelanggan"])) {
   		<h2>
   			<?= $_SESSION["username"]?>
   		</h2>
-  		<a href="#"><i class="fa fa-user"></i><span>Profil</span></a>
+  		<a href="profil_user.php"><i class="fa fa-user"></i><span>Profil</span></a>
   		<a href="beranda_user.php" style="background-color: #b34509;"><i class="fa fa-truck"></i><span>Beranda</span></a>
   		<a href="request_peminjaman_user.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="list_peminjaman_user.php"><i class = "fa fa-credit-card-alt"></i><span>List Peminjaman</span></a>
@@ -58,11 +58,9 @@ if(!isset($_SESSION["login_pelanggan"])) {
               <img class="card-img-top" src="Images/TipeMobil/<?= $tuple["gambar"]; ?>" alt="Gambar <?= $tuple["model"] ?>">
               <div class="card-body">
                 <h5 class="card-title"><?= $tuple["model"] ?></h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
               </div>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item"><?= $tuple["manufaktur"] ?></li>
-                <li class="list-group-item">Dapibus ac facilisis in</li>
                 <li class="list-group-item">Harga: <?= $tuple["harga_sewa"] ?>/hari</li>
               </ul>
               <div class="card-body text-center">

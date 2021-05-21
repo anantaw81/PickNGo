@@ -43,13 +43,13 @@
   		<a href="#"><i class="fa fa-user"></i><span>Profil</span></a>
   		<a href="beranda_user.php" style="background-color: #b34509;"><i class="fa fa-truck"></i><span>Beranda</span></a>
   		<a href="request_peminjaman_user.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
-  		<a href="list_peminjaman_user.php"><i class = "fa fa-credit-card-alt"></i><span>List Peminjaman</span>List Peminjaman</a>
+  		<a href="list_peminjaman_user.php"><i class = "fa fa-credit-card-alt"></i><span>List Peminjaman</span></a>
   		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>Logout</span></a>
   	</div>
     <div class = "content">
       <div class="mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 table-tuples">
         <div class="wrapper mb-2">
-          <a href = "menuuser.php" class="btn btn-secondary">kembali</a>
+          <a href = "beranda_user.php" class="btn btn-secondary">kembali</a>
         </div>
         <div class="card mb-3">
           <div class="row g-0">
@@ -73,7 +73,7 @@
                 Aturan Peminjaman
                 </h2>
                 <p>
-                1. asdaaaaaaaaaaaaaaa <br>
+                1. Bagi peminjaman yang tidak menggunakan jasa driver dan helper, kendaraan dapat dipinjam dan dikembalikan di kantor Pick N Go mulai dari pukul 08.00 WITA hingga pukul 17.00 WITA.<br>
                 2. asdasasda          <br>
                 
                 </p>

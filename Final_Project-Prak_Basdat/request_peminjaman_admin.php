@@ -143,9 +143,13 @@
                         <td><?= $tuple["model"] ?></td>
                         <td><?= $tuple["tanggal_peminjaman"] ?></td>
                         <td><?= $tuple["tanggal_pengembalian"] ?></td>
-                        <td><?= $tuple["opsi_driver"] ?></td>
+                        <?php if($tuple["opsi_driver"]==0): ?>
+                          <td>Tidak</td>
+                        <?php else: ?>
+                          <td>Ya</td>
+                        <?php endif?>
                         <td><?= $tuple["jumlah_helper"] ?></td>
-                        <td><a class="btn btn-success mx-1 mt-1 mb-1" href="#" role="button" onclick='terimaRequest("<?php echo ($tuple["opsi_driver"]); ?>", <?php echo ($tuple["jumlah_helper"]); ?>, <?php echo ($tuple["ID_peminjaman"]); ?>, <?php echo json_encode($unit_kendaraan); ?>)'>Terima</a>
+                        <td><a class="btn btn-success mx-1 mt-1 mb-1" href="#" role="button" onclick='terimaRequest(<?php echo ($tuple["opsi_driver"]); ?>, <?php echo ($tuple["jumlah_helper"]); ?>, <?php echo ($tuple["ID_peminjaman"]); ?>, <?php echo json_encode($unit_kendaraan); ?>)'>Terima</a>
                         <a class="btn btn-danger mt-1 mb-1" href="#" role="button" onclick="tolakRequest(<?= $tuple['ID_peminjaman'] ?>)">Tolak</a></td>
                     </tr>
                     <?php endforeach; ?>
@@ -171,12 +175,12 @@
                     <input type="text" class="form-control" id="ID-peminjaman-accept" name="ID-peminjaman-accept" readonly>
               </div>
               <div class="form-group">
-                    <label for="jumlah-helper-accept" class="col-form-label ">Jumlah Helper</label>
-                    <input type="number" class="form-control " id="jumlah-helper-accept" name="jumlah-helper-accept" readonly>
+                    <label for="jumlah-helper-accept" class="col-form-label d-none">Jumlah Helper</label>
+                    <input type="number" class="form-control d-none" id="jumlah-helper-accept" name="jumlah-helper-accept" readonly>
               </div>
               <div class="form-group">
-                    <label for="butuh-driver-accept" class="col-form-label d-none">Butuh Driver</label>
-                    <input type="text" class="form-control d-none" id="butuh-driver-accept" name="butuh-driver-accept" readonly>
+                    <label for="butuh-driver-accept" class="col-form-label">Butuh Driver</label>
+                    <input type="number" class="form-control" id="butuh-driver-accept" name="butuh-driver-accept" readonly>
               </div>
               <div class="form-group">
                 <label for="unit-kendaraan" class="col-form-label">Unit Kendaraan</label>
@@ -187,7 +191,7 @@
                 <label for="driver" class="col-form-label" id="label-driver">Driver</label>
                 <?php $driver = read("SELECT * FROM driver;"); ?>
                 <select class="form-select" id="driver-selection" name="driver-selection" required>
-                  <option value = -1 selected>Pilih Driver</option>
+                  <option selected>Pilih Driver</option>
                   <?php foreach ($driver as $driver_personel): ?>
                     <option value = "<?= $driver_personel["ID_driver"] ?>"><?= $driver_personel["nama"] ?></option>
                   <?php endforeach; ?>
@@ -321,7 +325,7 @@
           labelhelper2.style.display = "block";
         }
 
-        if (opsi_driver === "Tidak") {
+        if (opsi_driver == 0) {
           var driver_input = document.getElementById("driver-selection");
           var driver_label = document.getElementById("label-driver");
           driver_input.style.display = "none";
