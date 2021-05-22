@@ -67,21 +67,11 @@
   		<a href="request_peminjaman_admin.php" style="background-color: #b34509;"><i class = "fa fa-hourglass" ></i><span>Request Peminjaman</span></a>
   		<a href="validasi_user_admin.php"><i class = "fa fa-check-circle"></i><span>Validasi Pengguna</span></a>
       <a href="validasi_pembayaran_admin.php"><i class = "fa fa-money"></i><span>Validasi Pembayaran</span></a>
-  		<a href=""><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
+  		<a href="list_peminjaman_admin.php"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
   		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
   	</div>
 
     <div class = "content">
-        <form action="" method="post" autocomplete="off" class="search-form">
-            <div class="utility-bar">
-                <div></div>
-                <div class="search-bar">
-                <div class="filter">Filter</div>
-                    <input type="text" placeholder = "Cari berdasarkan nama" class="search-field" name="keyword">
-                    <button type="submit" class="fa fa-search search-button" name="search"></button>
-                </div>
-            </div>
-        </form>
         <?php if(isset($_SESSION["bool_status_reject"]) && $_SESSION["bool_status_reject"] === true): ?>
           <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-success alert-dismissible fade show mx-auto" role="alert">
             Permintaan peminjaman telah ditolak!
@@ -246,6 +236,10 @@
               <div class="form-group">
                     <label for="ID-peminjaman-reject" class="col-form-label d-none">ID peminjaman</label>
                     <input type="text" class="form-control d-none" id="ID-peminjaman-reject" name="ID-peminjaman-reject" readonly>
+              </div>
+              <div class="form-group">
+                    <label for="keterangan-reject-peminjaman" class="col-form-label">Keterangan Penolakan</label>
+                    <textarea id="keterangan-reject-peminjaman" name="keterangan-reject-peminjaman" rows = "5" class="form-control"></textarea>
               </div>
               <div class="text-center mt-4">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>

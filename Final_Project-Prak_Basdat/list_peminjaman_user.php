@@ -47,14 +47,6 @@
 
     <div class = "content">
         <div class="row card-container">
-            <div class="utility-bar">
-            <div></div>
-            <div class="search-bar">
-                <div class="filter">Filter</div>
-                <input type="text" placeholder = "Cari berdasarkan nama" class="search-field">
-                <button type="submit" class="fa fa-search search-button"></button>
-            </div>
-            </div>
             <?php foreach ($tuples as $tuple): ?>
                     <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1">
                         <div class="row g-0">

@@ -73,16 +73,21 @@
   	</div>
 
     <div class = "content">
-        <form action="" method="post" autocomplete="off" class="search-form">
-            <div class="utility-bar">
-                <div></div>
-                <div class="search-bar">
-                <div class="filter">Filter</div>
-                    <input type="text" placeholder = "Cari berdasarkan nama" class="search-field" name="keyword">
-                    <button type="submit" class="fa fa-search search-button" name="search"></button>
-                </div>
-            </div>
-        </form>
+        <?php if(isset($_SESSION["bool_status_validation"]) && $_SESSION["bool_status_validation"] === true ||isset($_SESSION["bool_status_not_valid"]) && $_SESSION["bool_status_not_valid"] === true): ?>
+          <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-success alert-dismissible fade show mx-auto" role="alert">
+            Validasi pelanggan berhasil dilakukan!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          <?php unset($_SESSION["bool_status_not_valid"]); ?>
+          <?php unset($_SESSION["bool_status_validation"]); ?>
+        <?php elseif(isset($_SESSION["bool_status_validation"]) && $_SESSION["bool_status_validation"] === false || isset($_SESSION["bool_status_not_valid"]) && $_SESSION["bool_status_not_valid"] === false): ?>
+          <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-danger alert-dismissible fade show mx-auto" role="alert">
+              Validasi pelanggan tidak berhasil dilakukan!
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          <?php unset($_SESSION["bool_status_not_valid"]); ?>
+          <?php unset($_SESSION["bool_status_validation"]); ?>
+        <?php endif; ?>
         <div class="table-responsive mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 table-tuples">
             <table class="table">
                 <thead class = "text-center" style="background-color: #000033; color: white;">

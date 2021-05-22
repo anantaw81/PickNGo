@@ -5,8 +5,18 @@
 		header("location: form_login.php");
 		exit;
 	}
- $tuples = read("SELECT * FROM detail_peminjaman;");
-
+    $tuples = read("SELECT * FROM detail_peminjaman;");
+    if(isset($_POST["submit-search-tanggal"])) {
+        $tanggal_batas_awal = $_POST["search-tanggal-batas-awal"];
+        $tanggal_batas_akhir = $_POST["search-tanggal-batas-akhir"];
+        if($_POST["search-model"] != -1) {
+            $id_model_kendaraan = $_POST["search-model"];
+            $tuples = read("SELECT * FROM detail_peminjaman WHERE ((tanggal_peminjaman BETWEEN '$tanggal_batas_awal' AND '$tanggal_batas_akhir') OR (tanggal_pengembalian BETWEEN '$tanggal_batas_awal' AND '$tanggal_batas_akhir')) AND (ID_model_kendaraan = $id_model_kendaraan);");
+        } else {
+            $tuples = read("SELECT * FROM detail_peminjaman WHERE ((tanggal_peminjaman BETWEEN '$tanggal_batas_awal' AND '$tanggal_batas_akhir') OR (tanggal_pengembalian BETWEEN '$tanggal_batas_awal' AND '$tanggal_batas_akhir'));");
+        }
+    }
+    
 ?>
 
 
@@ -45,15 +55,25 @@
   	</div>
 
       <div class = "content">
-        <div class="row card-container">
+        <form action="" method="post" autocomplete="off" class="search-form">
             <div class="utility-bar">
-            <div></div>
-            <div class="search-bar">
-                <div class="filter">Filter</div>
-                <input type="text" placeholder = "Cari berdasarkan nama" class="search-field">
-                <button type="submit" class="fa fa-search search-button"></button>
+                <div></div>
+                <div class="search-bar">
+                    <input type="date" placeholder = "Cari berdasarkan nama" class="search-field" name="search-tanggal-batas-awal" required>
+                    <input type="date" placeholder = "Cari berdasarkan nama" class="search-field" name="search-tanggal-batas-akhir" required>
+                    <?php $model = read("SELECT * FROM tipe_kendaraan;"); ?>
+                    <select class="search-field" id="search-model" name="search-model" required>
+                    <option value = "-1" selected>Pilih Model Kendaraan</option>
+                    <?php foreach ($model as $model_kendaraan): ?>
+                        <option value = "<?= $model_kendaraan["ID_model"] ?>"><?= $model_kendaraan["model"] ?></option>
+                    <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="fa fa-search search-button" name="submit-search-tanggal"></button>
+                </div>
             </div>
-            </div>
+        </form>
+        <div class="row card-container">
+            
             <?php foreach ($tuples as $tuple): ?>
                     <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1">
                         <div class="row g-0">

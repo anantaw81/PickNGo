@@ -10,6 +10,11 @@
 
   if(isset($_POST["submit-request"])){
     $request_status = request_peminjaman($_POST, $id_model);
+    if (isset($request_status)) {
+      $_SESSION["request-status"] = $request_status;
+      header("location: halaman_peminjaman_user.php?p_k_model=$id_model");
+      exit;
+    }
   }
 ?>
 
@@ -40,7 +45,7 @@
   		<h2>
   			<?= $_SESSION["username"]?>
   		</h2>
-  		<a href="#"><i class="fa fa-user"></i><span>Profil</span></a>
+  		<a href="profil_user.php"><i class="fa fa-user"></i><span>Profil</span></a>
   		<a href="beranda_user.php" style="background-color: #b34509;"><i class="fa fa-truck"></i><span>Beranda</span></a>
   		<a href="request_peminjaman_user.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="list_peminjaman_user.php"><i class = "fa fa-credit-card-alt"></i><span>List Peminjaman</span></a>
@@ -67,14 +72,35 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <?php if(isset($_SESSION["request-status"]) && $_SESSION["request-status"] === 1): ?>
+        <div class="col-xxl-12 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-success alert-dismissible fade show mx-auto" role="alert">
+            Peminjaman berhasil dilakukan!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+          <?php unset($_SESSION["request-status"]); ?>
+        <?php elseif(isset($_SESSION["request-status"]) && $_SESSION["request-status"] === 0): ?>
+            <div class="col-xxl-12 mt-5 col-md-8 col-sm-10 col-lg-10 col-9 alert alert-danger alert-dismissible fade show mx-auto" role="alert">
+                Akun anda belum valid! Tunggu admin untuk memvalidasi akun anda!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <?php unset($_SESSION["request-status"]); ?>
+        <?php elseif(isset($_SESSION["request-status"]) && $_SESSION["request-status"] === 2): ?>
+            <div class="col-xxl-12 mt-5 col-md-8 col-sm-10 col-lg-10 col-9 alert alert-danger alert-dismissible fade show mx-auto" role="alert">
+                Terjadi kesalahan pada query!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <?php unset($_SESSION["request-status"]); ?>
+        <?php endif; ?>
+          <div class="row">
             <div class="col-xxl-8">
                 <h2>
                 Aturan Peminjaman
                 </h2>
                 <p>
                 1. Bagi peminjaman yang tidak menggunakan jasa driver dan helper, kendaraan dapat dipinjam dan dikembalikan di kantor Pick N Go mulai dari pukul 08.00 WITA hingga pukul 17.00 WITA.<br>
-                2. asdasasda          <br>
+                2. Bagi peminjaman yang tidak menggunakan jasa driver dan helper, kendaraan akan dipinjamkan secara lepas kunci. Sehingga, pastikan bahwa anda membawa sim anda ke kantor Pick N Go saat akan mengambil kendaraan pinjaman anda. <br>
+                3. Bagi peminjaman yang menggunakan jasa driver dan helper, kendaraan akan diantarkan ke alamat yang anda berikan pada proses registrasi. Sehingga pastikan alamat tersebut adalah alamat tempat kendaraan akan diantarkan. <br>
+                4. Bagi peminjaman yang menggunakan jasa driver dan helper, kendaraan akan diantarkan ke lokasi anda pada pukul 08.00 WITA dan layanan dapat digunakan hingga pukul 17.00 WITA. <br>
                 
                 </p>
                 

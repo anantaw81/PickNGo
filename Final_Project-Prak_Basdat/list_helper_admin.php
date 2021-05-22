@@ -22,8 +22,8 @@
     }
   }
 
-  if(isset($_POST["search"])) {
-    $keyword = $_POST["keyword"];
+  if(isset($_POST["search-helper"])) {
+    $keyword = $_POST["keyword-search-helper"];
     $tuples = read("SELECT * FROM helper WHERE nama LIKE '%$keyword%'");
   }
 
@@ -81,9 +81,8 @@
         <div class="utility-bar">
             <div></div>
             <div class="search-bar">
-              <div class="filter">Filter</div>
-                <input type="text" placeholder = "Cari berdasarkan nama" class="search-field" name="keyword">
-                <button type="submit" class="fa fa-search search-button" name="search"></button>
+                <input type="text" placeholder = "Cari berdasarkan nama" class="search-field" name="keyword-search-helper">
+                <button type="submit" class="fa fa-search search-button" name="search-helper"></button>
             </div>
         </div>
       </form>

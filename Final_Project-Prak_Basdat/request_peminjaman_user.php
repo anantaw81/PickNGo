@@ -22,6 +22,17 @@
         }
     }
 
+    if(isset($_POST["submit-search-status-request"])) {
+      $keyword = $_POST["search-status-request"];
+      if($keyword == 0) {
+        $tuples = read("SELECT * FROM request_peminjaman WHERE ID_akun = '$id' AND status_peminjaman = 'rejected';");
+      } elseif ($keyword == 1) {
+        $tuples = read("SELECT * FROM request_peminjaman WHERE ID_akun = '$id' AND status_peminjaman = 'accepted';");
+      } elseif ($keyword == 2) {
+        $tuples = read("SELECT * FROM request_peminjaman WHERE ID_akun = '$id' AND status_peminjaman = 'not accepted yet';");
+      }
+      
+    }
 ?>
 
 <!DOCTYPE html>
@@ -58,15 +69,35 @@
   	</div>
 
     <div class = "content">
-        <div class="row card-container">
-            <div class="utility-bar">
+    <form action="" method="post" autocomplete="off" class="search-form">
+        <div class="utility-bar">
             <div></div>
             <div class="search-bar">
-                <div class="filter">Filter</div>
-                <input type="text" placeholder = "Cari berdasarkan nama" class="search-field">
-                <button type="submit" class="fa fa-search search-button"></button>
+            <select class="search-field" id="search-status-request" name="search-status-request" required>
+                    <option value = "-1" selected>Pilih Status Request</option>
+                    <option value = "0">Ditolak</option>
+                    <option value = "1">Disetujui</option>
+                    <option value = "2">Tunggu Persetujuan</option>
+            </select>
+            <button type="submit" class="fa fa-search search-button" name="submit-search-status-request"></button>
             </div>
-            </div>
+        </div>
+      </form>
+
+        <div class="row card-container">
+            <?php if(isset($_SESSION["bool_status_unggah"]) && $_SESSION["bool_status_unggah"] === true): ?>
+              <div class="mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 alert alert-success alert-dismissible fade show mx-auto" role="alert">
+                  Bukti pembayaran berhasil diunggah!
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              <?php unset($_SESSION["bool_status_unggah"]); ?>
+            <?php elseif(isset($_SESSION["bool_status_unggah"]) && $_SESSION["bool_status_unggah"] === false): ?>
+                <div class="mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 alert alert-danger alert-dismissible fade show mx-auto" role="alert">
+                    File yang diunggah bukan .jpg/.jpeg/.png atau melebihi 2MB! Bukti pembayaran tidak berhasil ditambahkan!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              <?php unset($_SESSION["bool_status_unggah"]); ?>
+            <?php endif; ?>
             <?php foreach ($tuples as $tuple): ?>
                 <?php if($tuple["status_peminjaman"] === "not accepted yet"):?>
                     <?php $status = "Tunggu Persetujuan";?>
@@ -77,7 +108,7 @@
                     <?php elseif($tuple["status_peminjaman"] === "not valid payment"):?>
                     <?php $status = "Pembayaran tidak valid!!";?>
                 <?php endif;?>
-                <?php if($tuple["status_peminjaman"] === "not accepted yet" || $tuple["status_peminjaman"] === "rejected"):?>
+                <?php if($tuple["status_peminjaman"] === "not accepted yet"):?>
                     <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1">
                         <div class="row g-0">
                             <div class="col-md-3 d-flex align-items-center justify-content-center">
@@ -90,8 +121,27 @@
                                     <p class="card-text">Tanggal Pengembalian: <?= $tuple["tanggal_pengembalian"] ?></p>
                                     <p class="card-text">Driver: <?= $tuple["opsi_driver"] ?></p>
                                     <p class="card-text">Jumlah Helper: <?= $tuple["jumlah_helper"] ?></p>
-                                    
                                     <p class="card-text">Status: <?= $status ?> </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php elseif($tuple["status_peminjaman"] === "rejected"): ?>
+                    <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1">
+                        <div class="row g-0">
+                            <div class="col-md-3 d-flex align-items-center justify-content-center">
+                            <img src="Images/TipeMobil/<?= $tuple["gambar"] ?>" alt="..." style="min-width: 286px; max-width: 286px;">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <p class="card-text">Model Kendaraan: <?= $tuple["model"] ?></p>
+                                    <p class="card-text">Tanggal Peminjaman: <?= $tuple["tanggal_peminjaman"] ?></p>
+                                    <p class="card-text">Tanggal Pengembalian: <?= $tuple["tanggal_pengembalian"] ?></p>
+                                    <p class="card-text">Driver: <?= $tuple["opsi_driver"] ?></p>
+                                    <p class="card-text">Jumlah Helper: <?= $tuple["jumlah_helper"] ?></p>
+                                    <p class="card-text">Status: <?= $status ?> </p>
+                                    <p class="card-text">Total Harga: Rp<?= $tuple["harga_peminjaman"] ?></p>
+                                    <p class="card-text">Keterangan penolakan: <?= $tuple["keterangan"] ?></p>
                                 </div>
                             </div>
                         </div>

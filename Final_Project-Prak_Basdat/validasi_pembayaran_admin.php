@@ -25,9 +25,9 @@
     $payment_validation_status = payment_validation($_POST["ID-pembayaran-tidak-valid"], 'not valid payment');
     if (isset($payment_validation_status)) {
         if ($payment_validation_status === true) {
-          $_SESSION["bool_status_payment_validation"] = true;
+          $_SESSION["bool_status_payment_not_valid"] = true;
         } else {
-          $_SESSION["bool_status_payment_validation"] = false;
+          $_SESSION["bool_status_payment_not_valid"] = false;
         }
         header("location: validasi_pembayaran_admin.php");
         exit;
@@ -73,14 +73,21 @@
 
     <div class = "content">
     <div class="row card-container">
-            <div class="utility-bar">
-            <div></div>
-            <div class="search-bar">
-                <div class="filter">Filter</div>
-                <input type="text" placeholder = "Cari berdasarkan nama" class="search-field">
-                <button type="submit" class="fa fa-search search-button"></button>
+            <?php if(isset($_SESSION["bool_status_payment_validation"]) && $_SESSION["bool_status_payment_validation"] === true ||isset($_SESSION["bool_status_payment_not_valid"]) && $_SESSION["bool_status_payment_not_valid"] === true): ?>
+            <div class="mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1  alert alert-success alert-dismissible fade show mx-auto" role="alert">
+              Validasi pembayaran berhasil dilakukan!
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+            <?php unset($_SESSION["bool_status_payment_not_valid"]); ?>
+            <?php unset($_SESSION["bool_status_payment_validation"]); ?>
+          <?php elseif(isset($_SESSION["bool_status_payment_validation"]) && $_SESSION["bool_status_payment_validation"] === false || isset($_SESSION["bool_status_payment_not_valid"]) && $_SESSION["bool_status_payment_not_valid"] === false): ?>
+            <div class="mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1  alert alert-danger alert-dismissible fade show mx-auto" role="alert">
+                Validasi pembayaran tidak berhasil dilakukan!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+            <?php unset($_SESSION["bool_status_payment_not_valid"]); ?>
+            <?php unset($_SESSION["bool_status_payment_validation"]); ?>
+          <?php endif; ?>
             <div class="table-responsive mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 table-tuples">
                 <table class="table">
                     <thead class = "text-center" style="background-color: #000033; color: white;">

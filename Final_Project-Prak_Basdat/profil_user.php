@@ -155,119 +155,132 @@
           </div>
         <?php unset($_SESSION["bool_status_update_password"]); ?>
       <?php endif; ?>
-      <div class="row">
-      <form class="" action="#" method="post" >
-          <div class="row mt-4">
-              <div class="col-md-4 offset-md-2">
-                  <label for="update-NIK" class="form-label">NIK</label>
-                  <input type="text" class="form-control" id="update-NIK" name="update-NIK" value="<?= $tuples[0]["NIK"] ?>">
-              </div>
-              <div class="col-md-4">
-                  <label for="update-nama" class="form-label">Nama</label>
-                  <input type="text" class="form-control" id="update-nama" name="update-nama" value="<?= $tuples[0]["nama"] ?>">
-              </div>
-          </div>
-          <div class="row mt-3">
-              <div class="col-md-8 offset-md-2">
-                  <label for="update-alamat" class="form-label">Alamat</label>
-                  <input type="text" class="form-control" id="update-alamat" name="update-alamat" value="<?= $tuples[0]["alamat"] ?>">
-              </div>
-          </div>
-          <div class="row mt-3">
-              <div class="col-md-4 offset-md-2">
-                  <label for="update-kabupaten" class="form-label">Kabupaten/Kota</label>
-                  <select class="form-select" id="update-kabupaten" name="update-kabupaten" required>
-                      <option value="Badung" <?=$tuples[0]['kabupaten'] == 'Badung' ? ' selected="selected"' : '';?>>Badung</option>
-                      <option value="Bangli" <?=$tuples[0]['kabupaten'] == 'Bangli' ? ' selected="selected"' : '';?>>Bangli</option>
-                      <option value="Buleleng" <?=$tuples[0]['kabupaten'] == 'Buleleng' ? ' selected="selected"' : '';?>>Buleleng</option>
-                      <option value="Gianyar" <?=$tuples[0]['kabupaten'] == 'Gianyar' ? ' selected="selected"' : '';?>>Gianyar</option>
-                      <option value="Jembrana" <?=$tuples[0]['kabupaten'] == 'Jembrana' ? ' selected="selected"' : '';?>>Jembrana</option>
-                      <option value="Karangasem" <?=$tuples[0]['kabupaten'] == 'Karangasem' ? ' selected="selected"' : '';?>>Karangasem</option>
-                      <option value="Klungkung" <?=$tuples[0]['kabupaten'] == 'Klungkung' ? ' selected="selected"' : '';?>>Klungkung</option>
-                      <option value="Tabanan" <?=$tuples[0]['kabupaten'] == 'Tabanan' ? ' selected="selected"' : '';?>>Tabanan</option>
-                      <option value="Denpasar" <?=$tuples[0]['kabupaten'] == 'Denpasar' ? ' selected="selected"' : '';?>>Denpasar</option>
-                  </select>
-              </div>
-              <div class="col-md-4">
-                  <label for="update-nomor-telepon" class="form-label">Nomor Telepon</label>
-                  <input type="text" class="form-control" id="update-nomor-telepon" name="update-nomor-telepon" value="<?= $tuples[0]["nomor_telepon"] ?>">
-              </div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-md-4 offset-md-2">
-            <label for="update-jenis-kelamin" class="form-label">Jenis Kelamin</label>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="update-jenis-kelamin" <?php echo ($tuples[0]["jenis_kelamin"] =='Pria')? 'checked':'' ?> id="gridRadios1" value="Pria" checked required>
-                    <label class="form-check-label" for="gridRadios1">
-                      Pria
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="update-jenis-kelamin" <?php echo ($tuples[0]["jenis_kelamin"] =='Wanita')? 'checked':'' ?> id="gridRadios2" value="Wanita" required>
-                    <label class="form-check-label" for="gridRadios2">
-                      Wanita
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <label for="" class="form-label">Status</label>
-                <input type="text" class="form-control" id="" name="" disabled value="<?= $tuples[0]["status_akun"] ?>">
-
-            </div>
-          </div>
-          <div class="mt-3 offset-md-2">
-                <button type="submit" name = "update-biodata-submit" class="btn btn-primary">Simpan Perubahan</button>
-          </div>
-      </form>
-      </div>
       
-      <div class="row mt-4">
-          <div class="col-md-3 offset-md-2">
-            <form class="" action="#" method="post" >
-              <div class="row mt-3">
-                  <div class="">
-                      <label for="update-username" class="form-label">Username</label>
-                      <input type="text" class="form-control" id="update-username" name="update-username" value="<?= $tuples[0]["username"] ?>">
+      <fieldset class="scheduler-border col-md-8 offset-md-2 shadow" >
+        <legend class="scheduler-border">Biodata</legend>
+          <div class="row">
+          <form class="form-horizontal" action="#" method="post">
+              <div class="row mt-2">
+                  <div class="col-md-6">
+                      <label for="update-NIK" class="form-label">NIK</label>
+                      <input type="text" class="form-control" id="update-NIK" name="update-NIK" value="<?= $tuples[0]["NIK"] ?>">
+                  </div>
+                  <div class="col-md-6">
+                      <label for="update-nama" class="form-label">Nama</label>
+                      <input type="text" class="form-control" id="update-nama" name="update-nama" value="<?= $tuples[0]["nama"] ?>">
                   </div>
               </div>
               <div class="row mt-3">
-                  <div class="">
-                      <label for="update-password-konfirmasi" class="form-label">Password Konfirmasi</label>
-                      <input type="password" class="form-control" id="update-password-konfirmasi" name="update-password-konfirmasi">
+                  <div class="col-md-12">
+                      <label for="update-alamat" class="form-label">Alamat</label>
+                      <input type="text" class="form-control" id="update-alamat" name="update-alamat" value="<?= $tuples[0]["alamat"] ?>">
                   </div>
+              </div>
+              <div class="row mt-3">
+                  <div class="col-md-6 ">
+                      <label for="update-kabupaten" class="form-label">Kabupaten/Kota</label>
+                      <select class="form-select" id="update-kabupaten" name="update-kabupaten" required>
+                          <option value="Badung" <?=$tuples[0]['kabupaten'] == 'Badung' ? ' selected="selected"' : '';?>>Badung</option>
+                          <option value="Bangli" <?=$tuples[0]['kabupaten'] == 'Bangli' ? ' selected="selected"' : '';?>>Bangli</option>
+                          <option value="Buleleng" <?=$tuples[0]['kabupaten'] == 'Buleleng' ? ' selected="selected"' : '';?>>Buleleng</option>
+                          <option value="Gianyar" <?=$tuples[0]['kabupaten'] == 'Gianyar' ? ' selected="selected"' : '';?>>Gianyar</option>
+                          <option value="Jembrana" <?=$tuples[0]['kabupaten'] == 'Jembrana' ? ' selected="selected"' : '';?>>Jembrana</option>
+                          <option value="Karangasem" <?=$tuples[0]['kabupaten'] == 'Karangasem' ? ' selected="selected"' : '';?>>Karangasem</option>
+                          <option value="Klungkung" <?=$tuples[0]['kabupaten'] == 'Klungkung' ? ' selected="selected"' : '';?>>Klungkung</option>
+                          <option value="Tabanan" <?=$tuples[0]['kabupaten'] == 'Tabanan' ? ' selected="selected"' : '';?>>Tabanan</option>
+                          <option value="Denpasar" <?=$tuples[0]['kabupaten'] == 'Denpasar' ? ' selected="selected"' : '';?>>Denpasar</option>
+                      </select>
+                  </div>
+                  <div class="col-md-6">
+                      <label for="update-nomor-telepon" class="form-label">Nomor Telepon</label>
+                      <input type="text" class="form-control" id="update-nomor-telepon" name="update-nomor-telepon" value="<?= $tuples[0]["nomor_telepon"] ?>">
+                  </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-6 ">
+                <label for="update-jenis-kelamin" class="form-label">Jenis Kelamin</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="update-jenis-kelamin" <?php echo ($tuples[0]["jenis_kelamin"] =='Pria')? 'checked':'' ?> id="gridRadios1" value="Pria" checked required>
+                        <label class="form-check-label" for="gridRadios1">
+                          Pria
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="update-jenis-kelamin" <?php echo ($tuples[0]["jenis_kelamin"] =='Wanita')? 'checked':'' ?> id="gridRadios2" value="Wanita" required>
+                        <label class="form-check-label" for="gridRadios2">
+                          Wanita
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="" class="form-label">Status</label>
+                    <input type="text" class="form-control" id="" name="" disabled value="<?= $tuples[0]["status_akun"] ?>">
+                </div>
               </div>
               <div class="mt-3 ">
-                    <button type="submit" name = "update-username-submit" class="btn btn-primary">Simpan Perubahan</button>
+                    <button type="submit" name = "update-biodata-submit" class="btn btn-primary">Simpan Perubahan</button>
               </div>
-            </form>
+          </form>
           </div>
-          <div class="col-md-3 offset-md-1">
-            <form class="" action="#" method="post" >
-            <div class="row mt-3">
-                <div class="">
-                    <label for="update-password-sekarang" class="form-label">Password Saat Ini</label>
-                    <input type="password" class="form-control" id="update-password-sekarang" name="update-password-sekarang">
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="">
-                    <label for="update-password-baru" class="form-label">Password Baru</label>
-                    <input type="password" class="form-control" id="update-password-baru" name="update-password-baru">
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="">
-                    <label for="update-konfirmasi-password-baru" class="form-label">Konfirmasi Password Baru</label>
-                    <input type="password" class="form-control" id="update-konfirmasi-password-baru" name="update-konfirmasi-password-baru">
-                </div>
-            </div>
-            <div class="mt-3">
-                  <button type="submit" name = "update-password-submit" class="btn btn-primary">Simpan Perubahan</button>
-            </div>
-            </form>
-          </div>
-      </div>
+        </legend>
+      </fieldset>
       
+      <div class="row mt-4">
+        <fieldset class="scheduler-border col-md-4 offset-md-2 shadow" >
+          <legend class="scheduler-border">Username</legend>
+            <div class="row">
+              <form class="form-horizontal" action="#" method="post" >
+                <div class="row mt-3">
+                    <div class="">
+                        <label for="update-username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="update-username" name="update-username" value="<?= $tuples[0]["username"] ?>">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="">
+                        <label for="update-password-konfirmasi" class="form-label">Password Konfirmasi</label>
+                        <input type="password" class="form-control" id="update-password-konfirmasi" name="update-password-konfirmasi">
+                    </div>
+                </div>
+                <div class="mt-3 ">
+                      <button type="submit" name = "update-username-submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+              </form>
+            </div>
+          </legend>
+        </fieldset>
+
+        <fieldset class="scheduler-border col-md-4 shadow" style="margin-left: 8px;">
+          <legend class="scheduler-border" >Password</legend>
+            <div class="row">
+              <form class="" action="#" method="post" >
+              <div class="row mt-3">
+                  <div class="">
+                      <label for="update-password-sekarang" class="form-label">Password Saat Ini</label>
+                      <input type="password" class="form-control" id="update-password-sekarang" name="update-password-sekarang">
+                  </div>
+              </div>
+              <div class="row mt-3">
+                  <div class="">
+                      <label for="update-password-baru" class="form-label">Password Baru</label>
+                      <input type="password" class="form-control" id="update-password-baru" name="update-password-baru">
+                  </div>
+              </div>
+              <div class="row mt-3">
+                  <div class="">
+                      <label for="update-konfirmasi-password-baru" class="form-label">Konfirmasi Password Baru</label>
+                      <input type="password" class="form-control" id="update-konfirmasi-password-baru" name="update-konfirmasi-password-baru">
+                  </div>
+              </div>
+              <div class="mt-3">
+                    <button type="submit" name = "update-password-submit" class="btn btn-primary">Simpan Perubahan</button>
+              </div>
+              </form>
+            </div>
+          </legend>
+        </fieldset>
+      </div>
+      <br>
     </div>
     
     <div class="modal" id="modalLogout" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

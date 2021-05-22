@@ -34,6 +34,11 @@
       exit;
     }
   }
+
+  if(isset($_POST["search-model-beranda-admin"])) {
+    $keyword = $_POST["keyword-search-model-beranda-admin"];
+    $tuples = read("SELECT tipe_kendaraan.ID_model, model, manufaktur, harga_sewa, gambar, jumlah_unit FROM tipe_kendaraan LEFT JOIN (SELECT ID_model, COUNT(ID_kendaraan) AS jumlah_unit FROM unit_kendaraan GROUP BY ID_model) AS n ON tipe_kendaraan.ID_model = n.ID_model WHERE model LIKE '%$keyword%';");
+  }
 ?>
 
 <!DOCTYPE html>
@@ -71,13 +76,12 @@
   	</div>
 
     <div class = "content">
-      <form action="" method="post" autocomplete="off" class="search-form">
+    <form action="" method="post" autocomplete="off" class="search-form">
         <div class="utility-bar">
             <div></div>
             <div class="search-bar">
-              <div class="filter">Filter</div>
-                <input type="text" placeholder = "Cari berdasarkan model" class="search-field" name="keyword">
-                <button type="submit" class="fa fa-search search-button" name="search"></button>
+                <input type="text" placeholder = "Cari berdasarkan nama" class="search-field" name="keyword-search-model-beranda-admin">
+                <button type="submit" class="fa fa-search search-button" name="search-model-beranda-admin"></button>
             </div>
         </div>
       </form>

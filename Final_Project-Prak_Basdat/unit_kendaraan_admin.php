@@ -86,16 +86,6 @@
   	</div>
 
     <div class = "content">
-      <form action="" method="post" autocomplete="off" class="search-form">
-        <div class="utility-bar">
-            <div></div>
-            <div class="search-bar">
-              <div class="filter">Filter</div>
-                <input type="text" placeholder = "Cari berdasarkan model" class="search-field" name="keyword">
-                <button type="submit" class="fa fa-search search-button" name="search"></button>
-            </div>
-        </div>
-      </form>
 
       <?php if(isset($_SESSION["bool_status_insert"]) && $_SESSION["bool_status_insert"] === true): ?>
         <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-success alert-dismissible fade show mx-auto" role="alert">

@@ -1,11 +1,15 @@
 <?php 
-session_start();
-require 'functions.php';
-$tuples = read("SELECT * FROM tipe_kendaraan;");
-if(!isset($_SESSION["login_pelanggan"])) {
-	header("location: form_login.php");
-	exit;
-}
+  session_start();
+  require 'functions.php';
+  $tuples = read("SELECT * FROM tipe_kendaraan;");
+  if(!isset($_SESSION["login_pelanggan"])) {
+    header("location: form_login.php");
+    exit;
+  }
+  if(isset($_POST["search-model-user"])) {
+    $keyword = $_POST["keyword-search-model-user"];
+    $tuples = read("SELECT tipe_kendaraan.ID_model, model, manufaktur, harga_sewa, gambar, jumlah_unit FROM tipe_kendaraan LEFT JOIN (SELECT ID_model, COUNT(ID_kendaraan) AS jumlah_unit FROM unit_kendaraan GROUP BY ID_model) AS n ON tipe_kendaraan.ID_model = n.ID_model WHERE model LIKE '%$keyword%';");
+  }
 ?>
 
 <!DOCTYPE html>
@@ -43,15 +47,16 @@ if(!isset($_SESSION["login_pelanggan"])) {
   	</div>
 
     <div class = "content">
-      <div class="row card-container">
-        <div class="utility-bar">
-          <div></div>
-          <div class="search-bar">
-            <div class="filter">Filter</div>
-            <input type="text" placeholder = "Cari berdasarkan nama" class="search-field">
-            <button type="submit" class="fa fa-search search-button"></button>
+      <form action="" method="post" autocomplete="off" class="search-form">
+          <div class="utility-bar">
+              <div></div>
+              <div class="search-bar">
+                  <input type="text" placeholder = "Cari berdasarkan nama" class="search-field" name="keyword-search-model-user">
+                  <button type="submit" class="fa fa-search search-button" name="search-model-user"></button>
+              </div>
           </div>
-        </div>  
+        </form>
+      <div class="row card-container"> 
         <?php foreach ($tuples as $tuple): ?>
           <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12">
             <div class="card mt-5 mx-auto" style="width: 18rem;">

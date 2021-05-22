@@ -354,7 +354,7 @@ function request_peminjaman($record, $id_model) {
 	$id_akun = $_SESSION["id_akun"];
 	$butuh_driver = $record["konfirmasi-driver"];
 	$jumlah_helper = $record["konfirmasi-helper"];
-	if($_SESSION["status_akun"] === "valid") {
+	if($_SESSION["status_akun"] == "valid") {
 		if($butuh_driver === "Ya") {
 			$query = "INSERT INTO peminjaman (ID_model_kendaraan, ID_akun, tanggal_peminjaman, tanggal_pengembalian, opsi_driver, jumlah_helper, status_peminjaman) VALUES($id_model, $id_akun, '$tanggal_peminjaman', '$tanggal_pengembalian', 1, $jumlah_helper, 'not accepted yet')";
 		} else {
@@ -420,7 +420,8 @@ function accept_peminjaman($record) {
 
 function reject_peminjaman($record){
 	$id_peminjaman = $record["ID-peminjaman-reject"];
-	$query = "UPDATE peminjaman SET status_peminjaman = 'rejected' WHERE ID_peminjaman = $id_peminjaman;";
+	$keterangan = $record["keterangan-reject-peminjaman"];
+	$query = "UPDATE peminjaman SET status_peminjaman = 'rejected', keterangan = '$keterangan' WHERE ID_peminjaman = $id_peminjaman;";
 	if (execute_query($query)){
 		return true;
 	}
@@ -461,6 +462,7 @@ function update_biodata($record, $id_pelanggan, $nik_pelanggan, $id_akun) {
 			return false;
 		}
 		$query = "UPDATE pelanggan SET NIK = '$NIK', nama = '$nama', alamat = '$alamat', kabupaten = '$kabupaten', jenis_kelamin = '$jenis_kelamin', nomor_telepon = '$nomor_telepon' WHERE ID_pelanggan = $id_pelanggan; UPDATE akun_pelanggan SET status_akun = 'not verified' WHERE ID_akun = $id_akun;";
+		$_SESSION["status_akun"] = "not verified";
 	} else {
 		$query = "UPDATE pelanggan SET nama = '$nama', alamat = '$alamat', kabupaten = '$kabupaten', jenis_kelamin = '$jenis_kelamin', nomor_telepon = '$nomor_telepon' WHERE ID_pelanggan = $id_pelanggan;";
 	}
