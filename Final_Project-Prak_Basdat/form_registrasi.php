@@ -29,7 +29,7 @@ if (isset($_POST["submit"])) {
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a href="index.php" class="navbar-brand ms-3">Pick N Go</a>
+        <a href="index.php" class="navbar-brand ms-3"><img src="Images/Logo/logo.png" style="max-height:60px;" class="img-fluid"></a>
         <button class="navbar-toggler me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -66,20 +66,22 @@ if (isset($_POST["submit"])) {
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     <?php endif; ?>
-    <form class="ms-3 me-3" action="#" method="post">
-        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+
+    <div class="container-fluid-md mx-auto" style="max-width:40%; margin-top:30px; margin-bottom:30px;">
+      <form class="ms-3 me-3 shadow " style="padding:30px; border-radius:20px;" action="#" method="post">
+        <div class="mb-3">
             <label for="inputNIK" class="form-label">NIK</label>
             <input type="text" class="form-control" name="NIK" id="inputNIK" aria-describedby="emailHelp" required>
         </div>
-        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="mb-3">
           <label for="inputNama" class="form-label">Nama</label>
           <input type="text" class="form-control" id="inputNama" name="nama" required>
         </div>
-        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="mb-3">
             <label for="inputAlamat" class="form-label">Alamat</label>
             <input type="text" class="form-control" id="inputAlamat" name="alamat" required>
         </div>
-        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="mb-3">
             <label class="form-label" for="inputKabupaten">Kabupaten/Kota</label>
             <select class="form-select" id="inputKabupaten" name="asal_kabupaten" required>
               <option selected>Pilih satu</option>
@@ -94,7 +96,7 @@ if (isset($_POST["submit"])) {
               <option value="Denpasar">Denpasar</option>
             </select>
           </div>
-        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="mb-3">
             <label for="jenisKelamin" class="form-label">Jenis Kelamin</label>
             <div class="form-check ">
                 <input class="form-check-input" type="radio" name="jenisKelamin" id="gridRadios1" value="Pria" checked required>
@@ -109,26 +111,27 @@ if (isset($_POST["submit"])) {
                 </label>
             </div>
         </div>
-        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="mb-3">
             <label for="inputNomorTelepon" class="form-label">Nomor Telepon</label>
             <input type="text" class="form-control" name="nomor_telepon" id="inputNomorTelepon" required>
         </div>
-        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="mb-3">
             <label for="inputUsername" class="form-label">Username</label>
             <input type="text" class="form-control" name="username" id="inputUsername" required>
         </div>
-        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="mb-3">
             <label for="inputPassword" class="form-label">Password</label>
             <input type="password" class="form-control" name="password_akun_login" id="inputPassword" required>
         </div>
-        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="mb-3">
             <label for="inputPassword2" class="form-label">Konfirmasi Password</label>
             <input type="password" class="form-control" name="password_akun_konfirmasi" id="inputPassword2" required>
         </div>
         <div class="text-center mb-3">
-            <button type="submit" name = "submit" class="btn btn-primary col-sm-4">Register</button>
+            <button type="submit" name = "submit" class="btn btn-outline-dark col-sm-3">Register</button>
         </div>
-    </form>
+      </form>
+    </div>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->

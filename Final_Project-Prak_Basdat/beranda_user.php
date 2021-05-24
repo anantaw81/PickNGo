@@ -1,7 +1,7 @@
 <?php 
   session_start();
   require 'functions.php';
-  $tuples = read("SELECT * FROM tipe_kendaraan;");
+  $tuples = read("SELECT * FROM tipe_kendaraan ORDER BY harga_sewa;");
   if(!isset($_SESSION["login_pelanggan"])) {
     header("location: form_login.php");
     exit;
@@ -22,12 +22,12 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="styling.css">
-    <title>Hello, world!</title>
+    <title>Hello World!</title>
   </head>
   <body>
   	<input type="checkbox" id="hamburger-menu">
   	<nav>
-  		<a href="index.php" class="logo">Pick N Go</a>
+  		<a href="index.php" class="logo"><img src="Images/Logo/logo.png" style="max-height:60px;" class="img-fluid"></a>
       <button type="button" id = "logout-button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLogout">
         Logout
       </button>
@@ -43,33 +43,38 @@
   		<a href="beranda_user.php" style="background-color: #b34509;"><i class="fa fa-truck"></i><span>Beranda</span></a>
   		<a href="request_peminjaman_user.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="list_peminjaman_user.php"><i class = "fa fa-credit-card-alt"></i><span>List Peminjaman</span></a>
+      <a href="list_pengembalian_user.php"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
   		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
   	</div>
 
     <div class = "content">
+      
       <form action="" method="post" autocomplete="off" class="search-form">
           <div class="utility-bar">
-              <div></div>
-              <div class="search-bar">
-                  <input type="text" placeholder = "Cari berdasarkan nama" class="search-field" name="keyword-search-model-user">
-                  <button type="submit" class="fa fa-search search-button" name="search-model-user"></button>
+            <div></div>
+            <div class="input-group">
+              <div class="form-floating">
+                <input type="text" class="form-control" id="floatingInput" placeholder="Cari berdasarkan nama" name="keyword-search-model-user">
+                <label for="floatingInput">Cari Berdasarkan Nama</label>
               </div>
-          </div>
-        </form>
+              <button type="submit" class="fa fa-search btn btn-dark searchbtn" name="search-model-user"></button>
+            </div>
+        </div>
+      </form>
       <div class="row card-container"> 
         <?php foreach ($tuples as $tuple): ?>
           <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12">
-            <div class="card mt-5 mx-auto" style="width: 18rem;">
+            <div class="card mt-5 mx-auto shadow" style="width: 18rem; border-radius:20px; margin-bottom:20px;">
               <img class="card-img-top" src="Images/TipeMobil/<?= $tuple["gambar"]; ?>" alt="Gambar <?= $tuple["model"] ?>">
               <div class="card-body">
                 <h5 class="card-title"><?= $tuple["model"] ?></h5>
               </div>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item"><?= $tuple["manufaktur"] ?></li>
-                <li class="list-group-item">Harga: <?= $tuple["harga_sewa"] ?>/hari</li>
+                <li class="list-group-item">Harga: Rp.<?= $tuple["harga_sewa"] ?>/hari</li>
               </ul>
               <div class="card-body text-center">
-                <a class="btn btn-primary" href="halaman_peminjaman_user.php?p_k_model=<?= $tuple["ID_model"]; ?>" role="button">Lihat Selengkapnya</a>
+                <a class="btn btn-primary" href="halaman_peminjaman_user.php?p_k_model=<?= $tuple["ID_model"]; ?>" role="button">Sewa Sekarang</a>
               </div>
             </div>
           </div>

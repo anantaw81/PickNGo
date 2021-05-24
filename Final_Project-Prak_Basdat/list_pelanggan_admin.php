@@ -7,45 +7,36 @@
 	}
   
   $jumlah_data_per_page = 10; 
-  $jumlah_data = read("SELECT COUNT(*) AS jumlah_data FROM data_pelanggan_baru;");
+  $jumlah_data = read("SELECT COUNT(*) AS jumlah_data FROM pelanggan INNER JOIN akun_pelanggan ON pelanggan.ID_pelanggan = akun_pelanggan.ID_pelanggan WHERE status_akun = 'valid';");
   $jumlah_page = ceil($jumlah_data[0]["jumlah_data"]/$jumlah_data_per_page);
-  if(isset($_GET["page_validasi_user"])) {
-    $page_saat_ini = $_GET["page_validasi_user"];
+  if(isset($_GET["page_list_pelanggan"])) {
+    $page_saat_ini = $_GET["page_list_pelanggan"];
   } else {
     $page_saat_ini = 1;
   }
   $batas_bawah = $jumlah_data_per_page*$page_saat_ini-$jumlah_data_per_page;
-  $tuples = read("SELECT * FROM data_pelanggan_baru LIMIT $batas_bawah, $jumlah_data_per_page;");
-
-    if(isset($_POST["submit-valid"])){
-        $validation_status = null;
-        $validation_status = user_validation($_POST["ID-akun-valid"], 'valid');
-        if (isset($validation_status)) {
-            if ($validation_status === true) {
-              $_SESSION["bool_status_validation"] = true;
-            } else {
-              $_SESSION["bool_status_validation"] = false;
-            }
-            header("location: validasi_user_admin.php");
-            exit;
-        }
+  $tuples = read("SELECT pelanggan.*, akun_pelanggan.ID_akun, akun_pelanggan.username FROM pelanggan INNER JOIN akun_pelanggan ON pelanggan.ID_pelanggan = akun_pelanggan.ID_pelanggan WHERE status_akun = 'valid' LIMIT $batas_bawah, $jumlah_data_per_page;");
+  if(isset($_POST["submit-blokir"])) {
+      $status_pemblokiran = blokir_pelanggan($_POST["ID-akun-blokir"]);
+      if ($status_pemblokiran === true) {
+        $_SESSION["bool_status_blokir"] = true;
+      } else {
+        $_SESSION["bool_status_blokir"] = false;
+      }
+      header("location: list_pelanggan_admin.php");
+      exit;
+  }
+  if(isset($_POST["search-list-pelanggan"])) {
+    $keyword = $_POST["keyword-search-list-pelanggan"];
+    $jumlah_data = read("SELECT COUNT(*) AS jumlah_data FROM data_pelanggan_baru;");
+    $jumlah_page = ceil($jumlah_data[0]["jumlah_data"]/$jumlah_data_per_page);
+    if(isset($_GET["page_list_pelanggan"])) {
+        $page_saat_ini = $_GET["page_list_pelanggan"];
+    } else {
+        $page_saat_ini = 1;
     }
-
-    if(isset($_POST["submit-not-valid"])){
-        $not_valid_status = null;
-        $not_valid_status = user_validation($_POST["ID-akun-not-valid"], 'not valid');
-        if (isset($not_valid_status)) {
-            if ($not_valid_status === true) {
-              $_SESSION["bool_status_not_valid"] = true;
-            } else {
-              $_SESSION["bool_status_not_valid"] = false;
-            }
-            header("location: validasi_user_admin.php");
-            exit;
-        }
-    }
-
-
+    $tuples = read("SELECT pelanggan.*, akun_pelanggan.ID_akun, akun_pelanggan.username FROM pelanggan INNER JOIN akun_pelanggan ON pelanggan.ID_pelanggan = akun_pelanggan.ID_pelanggan WHERE status_akun = 'valid' LIMIT $batas_bawah, $jumlah_data_per_page;");
+  }
 ?>
 
 <!DOCTYPE html>
@@ -73,12 +64,12 @@
   	<div class="sidebar">
   		<h2> Admin </h2>	
   		<a href="beranda_admin.php"><i class="fa fa-home"></i><span>Beranda</span></a>
-      <a href="list_model_kendaraan_admin.php"><i class="fa fa-truck"></i><span>List Kendaraan</span></a>
+        <a href="list_model_kendaraan_admin.php"><i class="fa fa-truck"></i><span>List Kendaraan</span></a>
   		<a href="list_driver_admin.php"><i class = "fa fa-address-book"></i><span>List Driver</span></a>
   		<a href="list_helper_admin.php"><i class = "fa fa-address-book-o"></i><span>List Helper</span></a>
-      <a href="list_pelanggan_admin.php"><i class = "fa fa-user"></i><span>List Pelanggan</span></a>
+        <a href="list_pelanggan_admin.php" style="background-color: #b34509;"><i class = "fa fa-user"></i><span>List Pelanggan</span></a>
   		<a href="request_peminjaman_admin.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
-  		<a href="validasi_user_admin.php" style="background-color: #b34509;"><i class = "fa fa-check-circle"></i><span>Validasi Pengguna</span></a>
+  		<a href="validasi_user_admin.php" ><i class = "fa fa-check-circle"></i><span>Validasi Pengguna</span></a>
       <a href="validasi_pembayaran_admin.php"><i class = "fa fa-money"></i><span>Validasi Pembayaran</span></a>
   		<a href="list_peminjaman_admin.php"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
       <a href="list_pengembalian_admin.php"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
@@ -86,41 +77,57 @@
   	</div>
 
     <div class = "content">
-        <?php if(isset($_SESSION["bool_status_validation"]) && $_SESSION["bool_status_validation"] === true ||isset($_SESSION["bool_status_not_valid"]) && $_SESSION["bool_status_not_valid"] === true): ?>
-          <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-success alert-dismissible fade show mx-auto" role="alert">
-            Validasi pelanggan berhasil dilakukan!
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-          <?php unset($_SESSION["bool_status_not_valid"]); ?>
-          <?php unset($_SESSION["bool_status_validation"]); ?>
-        <?php elseif(isset($_SESSION["bool_status_validation"]) && $_SESSION["bool_status_validation"] === false || isset($_SESSION["bool_status_not_valid"]) && $_SESSION["bool_status_not_valid"] === false): ?>
-          <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-danger alert-dismissible fade show mx-auto" role="alert">
-              Validasi pelanggan tidak berhasil dilakukan!
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-          <?php unset($_SESSION["bool_status_not_valid"]); ?>
-          <?php unset($_SESSION["bool_status_validation"]); ?>
+        <form action="" method="post" autocomplete="off" class="search-form">
+            <div class="utility-bar">
+                <div></div>
+                <div class="input-group">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="Cari berdasarkan nama" name="keyword-search-list-pelanggan">
+                    <label for="floatingInput">Cari Berdasarkan Nama/Username/Alamat</label>
+                </div>
+                <button type="submit" class="fa fa-search btn btn-dark searchbtn" name="search-list-pelanggan"></button>
+                </div>
+            </div>
+        </form>
+        <?php if(isset($_SESSION["bool_status_blokir"]) && $_SESSION["bool_status_blokir"] === true): ?>
+            <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-success alert-dismissible fade show mx-auto" role="alert">
+                Pelanggan berhasil diblokir!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION["bool_status_blokir"]); ?>
+        <?php elseif(isset($_SESSION["bool_status_blokir"]) && $_SESSION["bool_status_blokir"] === false): ?>
+            <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-danger alert-dismissible fade show mx-auto" role="alert">
+                Pelanggan tidak berhasil diblokir!
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION["bool_status_blokir"]); ?>
         <?php endif; ?>
         <div class="table-responsive mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 shadow table-tuples">
             <table class="table shadow">
                 <thead class = "text-center" style="background-color: #000033; color: white;">
-                    <th>NIK</th>
+                    <th>#</th>
                     <th>Nama</th>
+                    <th>Username</th>
                     <th style="width: 16.66%">Alamat</th>
                     <th>Kabupaten</th>
                     <th>Jenis Kelamin</th>
+                    <th>Nomor Telepon</th>
                     <th>Aksi</th>
                 </thead>
                 <tbody class="text-center">
+                    <?php $counter = 0; ?>
                     <?php foreach ($tuples as $tuple): ?>
+                    <?php $counter += 1;?>
                     <tr>
-                        <td><?= $tuple["NIK"] ?></td>
+                        <td><?= $counter ?></td>
                         <td><?= $tuple["nama"] ?></td>
+                        <td><?= $tuple["username"] ?></td>
                         <td><?= $tuple["alamat"] ?></td>
                         <td><?= $tuple["kabupaten"] ?></td>
                         <td><?= $tuple["jenis_kelamin"] ?></td>
-                        <td><a class="btn btn-success mx-1 mt-1 mb-1" href="#" role="button" onclick="valid_user('<?= $tuple['ID_akun'] ?>', '<?= $tuple['NIK'] ?>')">Valid</a>
-                        <a class="btn btn-danger mt-1 mb-1" href="#" role="button" onclick="not_valid_user('<?= $tuple['ID_akun'] ?>', '<?= $tuple['NIK'] ?>')">Tidak Valid</a></td>
+                        <td><?= $tuple["nomor_telepon"] ?></td>
+                        <td>
+                        <a class="btn btn-danger mt-1 mb-1" href="#" role="button" onclick="blokir(<?= $tuple['ID_akun'] ?>)">Blokir</a></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -138,13 +145,13 @@
               </li>
             <?php else: ?>
               <li class="page-item">
-                <a class="page-link" href="validasi_user_admin.php?page_validasi_user=<?= $page_saat_ini-1; ?>" aria-label="Previous">
+                <a class="page-link" href="list_pelanggan_admin.php?page_list_pelanggan=<?= $page_saat_ini-1; ?>" aria-label="Previous">
                   <span aria-hidden="true">&laquo;</span>
                 </a>
               </li>
             <?php endif;?>
             <?php for($i=1; $i<=$jumlah_page; $i++):?>
-              <li class="page-item"><a class="page-link" href="validasi_user_admin.php?page_validasi_user=<?= $i; ?>"><?= $i ?></a></li>
+              <li class="page-item"><a class="page-link" href="list_pelanggan_admin.php?page_list_pelanggan=<?= $i; ?>"><?= $i ?></a></li>
             <?php endfor;?>
             <?php if($page_saat_ini == $jumlah_page): ?>
               <li class="page-item disabled">
@@ -154,7 +161,7 @@
               </li>
             <?php else: ?>
               <li class="page-item">
-                <a class="page-link" href="validasi_user_admin.php?page_validasi_user=<?= $page_saat_ini+1; ?>" aria-label="Next">
+                <a class="page-link" href="list_pelanggan_admin.php?page_list_pelanggan=<?= $page_saat_ini+1; ?>" aria-label="Next">
                   <span aria-hidden="true">&raquo;</span>
                 </a>
               </li>
@@ -165,11 +172,11 @@
     </div>
     
 
-    <div class="modal fade" id="validModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalBlokir" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Konfirmasi Validasi</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Konfirmasi Pemblokiran</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
               <!-- <span aria-hidden="true">&times;</span> -->
             </button>
@@ -177,19 +184,15 @@
           <div class="modal-body">
             <form action="" method="post" enctype="multipart/form-data" id="updatehelperForm">
               <p> 
-                  Apakah anda yakin data pelanggan ini valid?
+                  Apakah anda yakin akan memblokir pelanggan ini?
               </p>
               <div class="form-group">
-                <label for="ID-akun-valid" class="col-form-label d-none">ID Akun</label>
-                <input type="text" class="form-control d-none" id="ID-akun-valid" name="ID-akun-valid" readonly>
-              </div>
-              <div class="form-group">
-                <label for="NIK-valid" class="col-form-label">NIK</label>
-                <input type="text" class="form-control" id="NIK-valid" name="NIK-valid" readonly>
+                <label for="ID-akun-blokir" class="col-form-label d-none">ID Akun</label>
+                <input type="text" class="form-control d-none" id="ID-akun-blokir" name="ID-akun-blokir" readonly>
               </div>
               <div class="text-center mt-2">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="submit" class="btn btn-success" name="submit-valid">Ya</button>
+                <button type="submit" class="btn btn-success" name="submit-blokir">Ya</button>
               </div>
             </form>
           </div>
@@ -215,54 +218,15 @@
         </div>
       </div> 
 
-    <div class="modal fade" id="notValidModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Konfirmasi Validasi</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-              <!-- <span aria-hidden="true">&times;</span> -->
-            </button>
-          </div>
-          <div class="modal-body">
-            <form action="" method="post" enctype="multipart/form-data" id="updatehelperForm">
-              <p> 
-                  Apakah anda yakin data pelanggan ini tidak valid?
-              </p>
-              <div class="form-group">
-                <label for="ID-akun-not-valid" class="col-form-label d-none">ID Akun</label>
-                <input type="text" class="form-control d-none" id="ID-akun-not-valid" name="ID-akun-not-valid" readonly>
-              </div>
-              <div class="form-group">
-                <label for="NIK-hapus" class="col-form-label">NIK</label>
-                <input type="text" class="form-control" id="NIK-not-valid" name="NIK-not-valid" readonly>
-              </div>
-              <div class="text-center mt-2">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="submit" class="btn btn-success" name="submit-not-valid">Ya</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- JAVASCRIPT --> 
     <script type="text/javascript">
 
-      function valid_user(ID_akun, NIK){
-        var myModal = new bootstrap.Modal(document.getElementById('validModal'));
-        document.getElementById("NIK-valid").value = NIK;
-        document.getElementById("ID-akun-valid").value = ID_akun;
+      function blokir(ID_akun){
+        var myModal = new bootstrap.Modal(document.getElementById('modalBlokir'));
+        document.getElementById("ID-akun-blokir").value = ID_akun;
         myModal.show();
       }
 
-      function not_valid_user(ID_akun, NIK){
-        var myModal = new bootstrap.Modal(document.getElementById('notValidModal'));
-        document.getElementById("NIK-not-valid").value = NIK;
-        document.getElementById("ID-akun-not-valid").value = ID_akun;
-        myModal.show();
-      }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
   

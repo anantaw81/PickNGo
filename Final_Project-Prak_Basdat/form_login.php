@@ -35,7 +35,7 @@ if (isset($_POST["submit"])) {
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a href="index.php" class="navbar-brand ms-3">Pick N Go</a>
+        <a href="index.php" class="navbar-brand ms-3"><img src="Images/Logo/logo.png" style="max-height:60px;" class="img-fluid"></a>
         <button class="navbar-toggler me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -58,21 +58,21 @@ if (isset($_POST["submit"])) {
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <?php endif; ?>
-
-    <form class="ms-3 me-3" action="#" method="post">
-
-        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+    <div class="container-fluid-md mx-auto" style="max-width:40%; margin-top:30px; margin-bottom:30px;">
+      <form class="ms-3 me-3 shadow " style="padding:30px; border-radius:20px;" action="#" method="post">
+        <div class="mb-3">
             <label for="inputUsername" class="form-label">Username</label>
             <input type="text" class="form-control" id="inputUsername" name="username_login">
         </div>
-        <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4">
+        <div class="mb-3">
             <label for="inputPassword" class="form-label">Password</label>
             <input type="password" class="form-control" id="inputPassword" name="password_akun_login">
         </div>
         <div class="text-center">
-            <button type="submit" name="submit" class="btn btn-primary col-sm-4">Login</button>
+            <button type="submit" name="submit" class="btn btn-outline-dark col-sm-3">Login</button>
         </div>
-    </form>
+      </form>
+    </div>
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->

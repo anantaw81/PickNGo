@@ -66,7 +66,7 @@
   <body>
   	<input type="checkbox" id="hamburger-menu">
   	<nav>
-  		<a href="index.php" class="logo">Pick N Go</a>
+  		<a href="index.php" class="logo"><img src="Images/Logo/logo.png" style="max-height:60px;" class="img-fluid"></a>
   		<button type="button" id = "logout-button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLogout">
         Logout
       </button>
@@ -75,13 +75,16 @@
 
   	<div class="sidebar">
   		<h2> Admin </h2>
-  		<a href="beranda_admin.php" style="background-color: #b34509;"><i class="fa fa-truck"></i><span>List Kendaraan</span></a>
+  		<a href="beranda_admin.php"><i class="fa fa-home"></i><span>Beranda</span></a>
+      <a href="list_model_kendaraan_admin.php" style="background-color: #b34509;"><i class="fa fa-truck"></i><span>List Kendaraan</span></a>
   		<a href="list_driver_admin.php"><i class = "fa fa-address-book"></i><span>List Driver</span></a>
   		<a href="list_helper_admin.php"><i class = "fa fa-address-book-o"></i><span>List Helper</span></a>
+      <a href="list_pelanggan_admin.php"><i class = "fa fa-user"></i><span>List Pelanggan</span></a>
   		<a href="request_peminjaman_admin.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="validasi_user_admin.php"><i class = "fa fa-check-circle"></i><span>Validasi Pengguna</span></a>
       <a href="validasi_pembayaran_admin.php"><i class = "fa fa-money"></i><span>Validasi Pembayaran</span></a>
   		<a href="list_peminjaman_admin"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
+      <a href="list_pengembalian_admin.php"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
   		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
   	</div>
 
@@ -129,12 +132,12 @@
         <?php unset($_SESSION["bool_status_update"]); ?>
       <?php endif; ?>
 
-      <div class="table-responsive mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 table-tuples">
+      <div class="table-responsive mt-5 form-floating c-container mx-auto table-tuples">
         <div class="wrapper mb-2">
-          <a href = "beranda_admin.php" class="btn btn-secondary">kembali</a>
+          <a href = "list_model_kendaraan_admin.php" class="btn btn-secondary">kembali</a>
           <a href="#" class="btn btn-primary"  role="button" onclick="addUnitFunc('<?= $model_data[0]["model"] ?>', '<?= $id_model ?>')"><i class="fa fa-plus-circle"></i> Tambah Unit</a>
         </div>
-        <div class="card mb-3">
+        <div class="card mb-3 shadow-sm">
           <div class="row g-0">
             <div class="col-md-4 mx-auto d-block" style = "min-width: 286px;">
               <img class="mx-auto d-block" src="Images/TipeMobil/<?= $model_data[0]["gambar"]; ?>" alt="...">
@@ -151,7 +154,7 @@
           </div>
         </div>
         
-        <table class="table">
+        <table class="table shadow-sm">
           <thead class = "text-center" style="background-color: #000033; color: white;">
             <th>ID Kendaraan</th>
             <th>Plat Nomor</th>

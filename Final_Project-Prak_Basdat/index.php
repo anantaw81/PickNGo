@@ -14,7 +14,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a href="index.html" class="navbar-brand ms-3">Pick N Go</a>
+        <a href="index.html" class="navbar-brand ms-3"><img src="Images/Logo/logo.png" style="max-height:60px;" class="img-fluid"></a>
         <button class="navbar-toggler me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>

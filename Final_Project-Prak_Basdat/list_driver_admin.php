@@ -1,8 +1,16 @@
 <?php 
 	session_start();
 	require 'functions.php';
-  
-	$tuples = read("SELECT * FROM driver;");
+  $jumlah_data_per_page = 2;
+  $jumlah_data = read("SELECT COUNT(*) AS jumlah_data FROM driver;");
+  $jumlah_page = ceil($jumlah_data[0]["jumlah_data"]/$jumlah_data_per_page);
+  if(isset($_GET["page_list_driver"])) {
+    $page_saat_ini = $_GET["page_list_driver"];
+  } else {
+    $page_saat_ini = 1;
+  }
+  $batas_bawah = $jumlah_data_per_page*$page_saat_ini-$jumlah_data_per_page;
+	$tuples = read("SELECT * FROM driver LIMIT $batas_bawah, $jumlah_data_per_page;");
 	if(!isset($_SESSION["login_admin"])) {
 		header("location: form_login.php");
 		exit;
@@ -57,7 +65,7 @@
   <body>
   	<input type="checkbox" id="hamburger-menu">
   	<nav>
-  		<a href="index.php" class="logo">Pick N Go</a>
+  		<a href="index.php" class="logo"><img src="Images/Logo/logo.png" style="max-height:60px;" class="img-fluid"></a>
   		<button type="button" id = "logout-button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLogout">
         Logout
       </button>
@@ -66,13 +74,16 @@
 
   	<div class="sidebar">
   		<h2> Admin </h2>	
-  		<a href="beranda_admin.php"><i class="fa fa-truck"></i><span>List Kendaraan</span></a>
+  		<a href="beranda_admin.php"><i class="fa fa-home"></i><span>Beranda</span></a>
+      <a href="list_model_kendaraan_admin.php"><i class="fa fa-truck"></i><span>List Kendaraan</span></a>
   		<a href="list_driver_admin.php" style="background-color: #b34509;"><i class = "fa fa-address-book"></i><span>List Driver</span></a>
   		<a href="list_helper_admin.php"><i class = "fa fa-address-book-o"></i><span>List Helper</span></a>
+      <a href="list_pelanggan_admin.php"><i class = "fa fa-user"></i><span>List Pelanggan</span></a>
   		<a href="request_peminjaman_admin.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="validasi_user_admin.php"><i class = "fa fa-check-circle"></i><span>Validasi Pengguna</span></a>
       <a href="validasi_pembayaran_admin.php"><i class = "fa fa-money"></i><span>Validasi Pembayaran</span></a>
   		<a href="list_peminjaman_admin.php"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
+      <a href="list_pengembalian_admin.php"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
   		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
   	</div>
 
@@ -80,9 +91,12 @@
       <form action="" method="post" autocomplete="off" class="search-form">
         <div class="utility-bar">
             <div></div>
-            <div class="search-bar">
-                <input type="text" placeholder = "Cari berdasarkan nama" class="search-field" name="keyword-search-driver">
-                <button type="submit" class="fa fa-search search-button" name="search-driver"></button>
+            <div class="input-group">
+              <div class="form-floating">
+                <input type="text" class="form-control" id="floatingInput" placeholder="Cari berdasarkan nama" name="keyword-search-driver">
+                <label for="floatingInput">Cari Berdasarkan Nama</label>
+              </div>
+              <button type="submit" class="fa fa-search btn btn-dark searchbtn" name="search-driver"></button>
             </div>
         </div>
       </form>
@@ -131,14 +145,14 @@
 
       <div class="row card-container">
         <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12">
-            <div class="card mt-5 mx-auto btn" style="width: 18rem; height: 397px;">
+            <div class="card mt-5 mx-auto btn shadow" style="width: 18rem; height: 397px; margin-bottom:20px;">
               <i class = "fa fa-plus-circle" style="line-height: 300px; font-size: 7rem; color: green;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
               <p>Tambah Driver</p>
             </div>
           </div>
         <?php foreach ($tuples as $tuple): ?>
           <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12">
-            <div class="card mt-5 mx-auto" style="width: 18rem;">
+            <div class="card mt-5 mx-auto shadow" style="width: 18rem; margin-bottom:20px;">
               <img class="card-img-top" src="Images/Driver/<?= $tuple["nama_foto"]; ?>" alt="Gambar <?= $tuple["nama"] ?>">
               <div class="card-body">
                 <h5 class="card-title"><?= $tuple["nama"] ?></h5>
@@ -155,6 +169,41 @@
           </div>
         <?php endforeach; ?>
       </div>
+      <div class="row mx-auto ms-5 ps-5">
+          <nav aria-label="Page navigation example" class="pagination-button" style="background-color: white;">
+            <ul class="pagination pagination-sm offset-xxl-4" style="background-color: white;">
+              <?php if($page_saat_ini == 1): ?>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+              <?php else: ?>
+                <li class="page-item">
+                  <a class="page-link" href="list_driver_admin.php?page_list_driver=<?= $page_saat_ini-1; ?>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+              <?php endif;?>
+              <?php for($i=1; $i<=$jumlah_page; $i++):?>
+                <li class="page-item"><a class="page-link" href="list_driver_admin.php?page_list_driver=<?= $i; ?>"><?= $i ?></a></li>
+              <?php endfor;?>
+              <?php if($page_saat_ini == $jumlah_page): ?>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              <?php else: ?>
+                <li class="page-item">
+                  <a class="page-link" href="list_driver_admin.php?page_list_driver=<?= $page_saat_ini+1; ?>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              <?php endif;?>
+            </ul>
+          </nav>
+        </div>
     </div>
     <script type="text/javascript">
       function updateData(id, nama, jenis_kelamin, tarif, nama_foto){

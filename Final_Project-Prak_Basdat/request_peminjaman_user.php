@@ -6,7 +6,7 @@
         exit;
     }
     $id = $_SESSION["id_akun"];
-    $tuples = read("SELECT * FROM request_peminjaman WHERE ID_akun = '$id';");
+    $tuples = read("SELECT * FROM request_peminjaman WHERE ID_akun = '$id' ORDER BY ID_peminjaman DESC;");
 
     if(isset($_POST["submit-pembayaran"])) {
         $status_unggah = null;
@@ -25,11 +25,11 @@
     if(isset($_POST["submit-search-status-request"])) {
       $keyword = $_POST["search-status-request"];
       if($keyword == 0) {
-        $tuples = read("SELECT * FROM request_peminjaman WHERE ID_akun = '$id' AND status_peminjaman = 'rejected';");
+        $tuples = read("SELECT * FROM request_peminjaman WHERE ID_akun = '$id' AND status_peminjaman = 'rejected' ORDER BY ID_peminjaman DESC;");
       } elseif ($keyword == 1) {
-        $tuples = read("SELECT * FROM request_peminjaman WHERE ID_akun = '$id' AND status_peminjaman = 'accepted';");
+        $tuples = read("SELECT * FROM request_peminjaman WHERE ID_akun = '$id' AND status_peminjaman = 'accepted' ORDER BY ID_peminjaman DESC;");
       } elseif ($keyword == 2) {
-        $tuples = read("SELECT * FROM request_peminjaman WHERE ID_akun = '$id' AND status_peminjaman = 'not accepted yet';");
+        $tuples = read("SELECT * FROM request_peminjaman WHERE ID_akun = '$id' AND status_peminjaman = 'not accepted yet' ORDER BY ID_peminjaman DESC;");
       }
       
     }
@@ -50,11 +50,12 @@
 <body>
     <input type="checkbox" id="hamburger-menu">
   	<nav>
-  		<a href="index.php" class="logo">Pick N Go</a>
+      <a href="index.php" class="logo"><img src="Images/Logo/logo.png" style="max-height:60px;" class="img-fluid"></a>
   		<button type="button" id = "logout-button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLogout">
         Logout
       </button>
   		<label for="hamburger-menu" class="hamburger"><i class="fa fa-bars"></i></label>
+  	
   	</nav>
 
   	<div class="sidebar">
@@ -65,6 +66,7 @@
   		<a href="beranda_user.php"><i class="fa fa-truck"></i><span>Beranda</span></a>
   		<a href="request_peminjaman_user.php" style="background-color: #b34509;"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="list_peminjaman_user.php"><i class = "fa fa-credit-card-alt"></i><span>List Peminjaman</span></a>
+      <a href="list_pengembalian_user.php"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
   		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
   	</div>
 
@@ -72,15 +74,19 @@
     <form action="" method="post" autocomplete="off" class="search-form">
         <div class="utility-bar">
             <div></div>
-            <div class="search-bar">
-            <select class="search-field" id="search-status-request" name="search-status-request" required>
-                    <option value = "-1" selected>Pilih Status Request</option>
-                    <option value = "0">Ditolak</option>
-                    <option value = "1">Disetujui</option>
-                    <option value = "2">Tunggu Persetujuan</option>
-            </select>
-            <button type="submit" class="fa fa-search search-button" name="submit-search-status-request"></button>
+            <div class="input-group ">
+              <div class="form-floating">
+                <select class="form-select" id="floatingSelect" aria-label="Floating label select example" name="search-status-request" required>
+                  <option value=-1 selected>Pilih Status Reguest</option>
+                  <option value="0">Ditolak</option>
+                  <option value="1">Disetujui</option>
+                  <option value="2">Tunggu Persetujuan</option>
+                </select>
+                <label for="floatingInput">Cari Berdasarkan Status</label>
+              </div>
+              <button type="submit" class="fa fa-search btn btn-dark searchbtn" name="submit-search-status-request"></button>
             </div>
+            
         </div>
       </form>
 
@@ -109,10 +115,10 @@
                     <?php $status = "Pembayaran tidak valid!!";?>
                 <?php endif;?>
                 <?php if($tuple["status_peminjaman"] === "not accepted yet"):?>
-                    <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1">
+                    <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 shadow">
                         <div class="row g-0">
                             <div class="col-md-3 d-flex align-items-center justify-content-center">
-                            <img src="Images/TipeMobil/<?= $tuple["gambar"] ?>" alt="..." style="min-width: 286px; max-width: 286px;">
+                            <img src="Images/TipeMobil/<?= $tuple["gambar"] ?>" class="img-fluid"  alt="..." style=" max-width: 100%;" >
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
@@ -127,10 +133,10 @@
                         </div>
                     </div>
                     <?php elseif($tuple["status_peminjaman"] === "rejected"): ?>
-                    <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1">
+                    <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 shadow">
                         <div class="row g-0">
                             <div class="col-md-3 d-flex align-items-center justify-content-center">
-                            <img src="Images/TipeMobil/<?= $tuple["gambar"] ?>" alt="..." style="min-width: 286px; max-width: 286px;">
+                            <img src="Images/TipeMobil/<?= $tuple["gambar"] ?>" class="img-fluid"  alt="..." style=" max-width: 100%;">
                             </div>
                             <div class="col-md-6">
                                 <div class="card-body">
@@ -147,10 +153,10 @@
                         </div>
                     </div>
                 <?php elseif($tuple["status_peminjaman"] === "accepted" | $tuple["status_peminjaman"] === "not valid payment"): ?>
-                    <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1">
+                    <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 shadow">
                         <div class="row g-0">
                             <div class="col-md-3 d-flex align-items-center justify-content-center">
-                            <img src="Images/TipeMobil/<?= $tuple["gambar"] ?>" alt="..." style="min-width: 286px; max-width: 286px;">
+                            <img src="Images/TipeMobil/<?= $tuple["gambar"] ?>" class="img-fluid"  alt="..." style=" max-width: 100%;">
                             </div>
                             <div class="col-md-6">
                                 <div class="card-body">
@@ -164,12 +170,12 @@
                                 </div>
                             </div>
                             <?php if(is_null($tuple["gambar_bukti_pembayaran"])): ?>
-                              <div class="col-md-3 mt-3">
-                                  <a class="btn btn-primary offset-4" href="#" role="button" onclick="uploadPayment(<?= $tuple['ID_peminjaman'] ?>)">Unggah Bukti Pembayaran</a>
+                              <div class="col-md-3 mt-3 d-flex align-items-center">
+                                  <a class="btn btn-outline-dark btn-lg offset-3" href="#" role="button"  onclick="uploadPayment(<?= $tuple['ID_peminjaman'] ?>)">Unggah Bukti Pembayaran</a>
                               </div>
                             <?php else: ?>
-                                <div class="col-md-3 mt-3">
-                                  <a class="btn btn-primary offset-4" href="#" role="button" onclick="uploadPayment(<?= $tuple['ID_peminjaman'] ?>)">Perbaharui Bukti Pembayaran</a>
+                                <div class="col-md-3 mt-3 d-flex align-items-center">
+                                  <a class="btn btn-outline-dark btn-lg offset-3" href="#" role="button" onclick="uploadPayment(<?= $tuple['ID_peminjaman'] ?>)">Perbaharui Bukti Pembayaran</a>
                               </div>
                             <?php endif;?>
                         </div>

@@ -6,30 +6,8 @@
 		exit;
 	}
     
-    $tuples = read("SELECT detail_peminjaman.*, tanggal_pengembalian_sebenarnya FROM detail_peminjaman LEFT JOIN pengembalian ON pengembalian.ID_peminjaman = detail_peminjaman.ID_peminjaman ORDER BY ID_peminjaman DESC;");
-    if(isset($_POST["submit-search-tanggal"])) {
-        $tanggal_batas_awal = $_POST["search-tanggal-batas-awal"];
-        $tanggal_batas_akhir = $_POST["search-tanggal-batas-akhir"];
-        if($_POST["search-model"] != -1) {
-            $id_model_kendaraan = $_POST["search-model"];
-            $tuples = read("SELECT * FROM detail_peminjaman WHERE ((tanggal_peminjaman BETWEEN '$tanggal_batas_awal' AND '$tanggal_batas_akhir') OR (tanggal_pengembalian BETWEEN '$tanggal_batas_awal' AND '$tanggal_batas_akhir')) AND (ID_model_kendaraan = $id_model_kendaraan);");
-        } else {
-            $tuples = read("SELECT * FROM detail_peminjaman WHERE ((tanggal_peminjaman BETWEEN '$tanggal_batas_awal' AND '$tanggal_batas_akhir') OR (tanggal_pengembalian BETWEEN '$tanggal_batas_awal' AND '$tanggal_batas_akhir'));");
-        }
-    }
-    
-    if(isset($_POST["submit-pengembalian"])) {
-        $status_pengembalian = pengembalian($_POST["ID-peminjaman-pengembalian"], $_POST["denda-pengembalian"], $_POST["tanggal-pengembalian-seharusnya"]);
-        if (isset($status_pengembalian)) {
-            if ($status_pengembalian == true) {
-              $_SESSION["bool_status_pengembalian"] = true;
-            } else {
-              $_SESSION["bool_status_pengembalian"] = false;
-            }
-            header("location: list_peminjaman_admin.php");
-            exit;
-        }
-    }
+    $tuples = read("SELECT * FROM detail_pengembalian ORDER BY ID_pengembalian DESC;");
+
 ?>
 
 
@@ -64,48 +42,12 @@
       <a href="list_pelanggan_admin.php"><i class = "fa fa-user"></i><span>List Pelanggan</span></a>
   		<a href="request_peminjaman_admin.php"><i class = "fa fa-hourglass" ></i><span>Request Peminjaman</span></a>
   		<a href="validasi_user_admin.php"><i class = "fa fa-check-circle"></i><span>Validasi Pengguna</span></a>
-      <a href="validasi_pembayaran_admin.php"><i class = "fa fa-money"></i><span>Validasi Pembayaran</span></a>
-  		<a href="list_peminjaman_admin.php" style="background-color: #b34509;"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
-      <a href="list_pengembalian_admin.php"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
-  		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
+        <a href="validasi_pembayaran_admin.php"><i class = "fa fa-money"></i><span>Validasi Pembayaran</span></a>
+  		<a href="list_peminjaman_admin.php"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
+          <a href="list_pengembalian_admin.php" style="background-color: #b34509;"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
+  		<a href="l" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
   	</div>
       <div class = "content">
-        <form action="" method="post" autocomplete="off" class="search-form">
-            <div class="utility-bar">
-                <div></div>
-                <div class="input-group">
-                    <div class="form-floating b-container">
-                        <input type="date" class="form-control" id="floatingInput" placeholder="Cari berdasarkan nama" name="search-tanggal-batas-awal" required>
-                        <label for="floatingInput">Batas Awal</label>
-                    </div>
-                    <div class="form-floating b-container">
-                        <input type="date" class="form-control" id="floatingInput1" placeholder="Cari berdasarkan nama" name="search-tanggal-batas-akhir" required>
-                        <label for="floatingInput1">Batas Akhir</label>
-                    </div>
-                    <?php $model = read("SELECT * FROM tipe_kendaraan;"); ?>
-                    <select class="form-select b-conatiner" id="search-model" name="search-model" style="margin-bottom:10px;"  required>
-                    <option value = "-1" selected>Pilih Model Kendaraan</option>
-                    <?php foreach ($model as $model_kendaraan): ?>
-                        <option value = "<?= $model_kendaraan["ID_model"] ?>"><?= $model_kendaraan["model"] ?></option>
-                    <?php endforeach; ?>
-                    </select>
-                    <button type="submit" class="fa fa-search btn btn-dark searchbtn" name="submit-search-tanggal"></button>
-                </div>
-            </div>
-        </form>
-        <?php if(isset($_SESSION["bool_status_pengembalian"]) && $_SESSION["bool_status_pengembalian"] === true): ?>
-          <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-success alert-dismissible fade show mx-auto" role="alert">
-            Pengembalian telah dikonfirmasi!
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-          <?php unset($_SESSION["bool_status_pengembalian"]); ?>
-        <?php elseif(isset($_SESSION["bool_status_pengembalian"]) && $_SESSION["bool_status_pengembalian"] === false): ?>
-          <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-danger alert-dismissible fade show mx-auto" role="alert">
-              Terjadi kesalahan pada query!
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-          <?php unset($_SESSION["bool_status_pengembalian"]); ?>
-        <?php endif; ?>
         <div class="row card-container">
             <?php foreach ($tuples as $tuple): ?>
                     <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 shadow">
@@ -124,37 +66,11 @@
                                     <?php endif;?>
                                     <p class="card-text">Tanggal Peminjaman: <?= $tuple["tanggal_peminjaman"] ?></p>
                                     <p class="card-text">Tanggal Pengembalian: <?= $tuple["tanggal_pengembalian"] ?></p>
-                                    <?php if ($tuple["nama_driver"] != NULL): ?>
-                                        <p class="card-text">Nama Driver: <?= $tuple["nama_driver"] ?></p>
-                                    <?php else: ?>
-                                        <p class="card-text">Nama Driver: NULL</p>
-                                    <?php endif;?>
-                                    <?php if($tuple["jumlah_helper"] == 2): ?>
-                                        <?php if ($tuple["ID_helper_1"] != NULL): ?>
-                                            <p class="card-text">Nama Helper: <?= $tuple["nama_helper_1"] ?></p>
-                                        <?php else: ?>
-                                            <p class="card-text">Nama Helper: NULL</p>
-                                        <?php endif;?>
-                                        <?php if ($tuple["ID_helper_2"] != NULL): ?>
-                                            <p class="card-text">Nama Helper: <?= $tuple["nama_helper_2"] ?></p>
-                                        <?php else: ?>
-                                            <p class="card-text">Nama Helper: NULL</p>
-                                        <?php endif;?>
-                                    <?php elseif($tuple["jumlah_helper"] == 1): ?>
-                                        <?php if ($tuple["ID_helper_1"] != NULL): ?>
-                                            <p class="card-text">Nama Helper: <?= $tuple["nama_helper_1"] ?></p>
-                                        <?php else: ?>
-                                            <p class="card-text">Nama Helper: NULL</p>
-                                        <?php endif;?>
-                                    <?php endif;?>
-                                    <p class="card-text">Total Harga: Rp<?= $tuple["harga_peminjaman"] ?></p>
+                                    <p class="card-text">Realisasi Tanggal Pengembalian: <?= $tuple["tanggal_pengembalian_sebenarnya"] ?></p>
+                                    <p class="card-text">Denda Per Hari: Rp<?= $tuple["denda_per_hari"] ?></p>
+                                    <p class="card-text">Total Biaya Denda Keterlambatan: Rp<?= $tuple["jumlah_denda"] ?></p>
                                 </div>
                             </div>
-                            <?php if($tuple["tanggal_pengembalian_sebenarnya"] == NULL): ?>
-                                <div class="col-md-2 mt-3">
-                                    <a class="btn btn-outline-dark btn-lg offset-3" href="#" role="button"  onclick="pengembalian('<?= $tuple['ID_peminjaman']; ?>', '<?= $tuple['tanggal_pengembalian']; ?>')">Konfirmasi Pengembalian</a>
-                                </div>
-                            <?php endif;?>
                         </div>
                     </div>
             <?php endforeach;?>

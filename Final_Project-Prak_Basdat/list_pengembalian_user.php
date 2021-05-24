@@ -6,10 +6,7 @@
         exit;
     }
     $id = $_SESSION["id_akun"];
-    $tuples = read("SELECT * FROM detail_peminjaman WHERE ID_akun = $id ORDER BY ID_peminjaman DESC;");
-
-    
-
+    $tuples = read("SELECT * FROM detail_pengembalian WHERE ID_akun = $id ORDER BY ID_pengembalian DESC;");
 ?>
 
 <!DOCTYPE html>
@@ -41,8 +38,8 @@
   		<a href="profil_user.php"><i class="fa fa-user"></i><span>Profil</span></a>
   		<a href="beranda_user.php"><i class="fa fa-truck"></i><span>Beranda</span></a>
   		<a href="request_peminjaman_user.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
-  		<a href="list_peminjaman_user.php" style="background-color: #b34509;"><i class = "fa fa-credit-card-alt"></i><span>List Peminjaman</span></a>
-          <a href="list_pengembalian_user.php"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
+  		<a href="list_peminjaman_user.php"><i class = "fa fa-credit-card-alt"></i><span>List Peminjaman</span></a>
+        <a href="list_pengembalian_user.php" style="background-color: #b34509;"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
   		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
   	</div>
 
@@ -54,36 +51,20 @@
                             <div class="col-md-3 d-flex align-items-center justify-content-center">
                             <img src="Images/TipeMobil/<?= $tuple["gambar"] ?>" class="img-fluid"  alt="..." style=" max-width: 100%;">
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-7">
                                 <div class="card-body">
                                     <p class="card-text">Model Kendaraan: <?= $tuple["model"] ?></p>
-                                    <p class="card-text">Plat Nomor Kendaraan: <?= $tuple["plat_nomor"] ?></p>
+                                    <?php if($tuple["plat_nomor"] != NULL): ?>
+                                        <p class="card-text">Plat Nomor Kendaraan: <?= $tuple["plat_nomor"] ?></p>
+                                    <?php else: ?>
+                                        <p class="card-text">Plat Nomor Kendaraan: NULL</p>
+                                    <?php endif;?>
                                     <p class="card-text">Tanggal Peminjaman: <?= $tuple["tanggal_peminjaman"] ?></p>
                                     <p class="card-text">Tanggal Pengembalian: <?= $tuple["tanggal_pengembalian"] ?></p>
-                                    <?php if ($tuple["nama_driver"] != NULL): ?>
-                                        <p class="card-text">Nama Driver: <?= $tuple["nama_driver"] ?></p>
-                                    <?php else: ?>
-                                        <p class="card-text">Nama Driver: NULL</p>
-                                    <?php endif;?>
-                                    <?php if($tuple["jumlah_helper"] == 2): ?>
-                                        <?php if ($tuple["ID_helper_1"] != NULL): ?>
-                                            <p class="card-text">Nama Helper: <?= $tuple["nama_helper_1"] ?></p>
-                                        <?php else: ?>
-                                            <p class="card-text">Nama Helper: NULL</p>
-                                        <?php endif;?>
-                                        <?php if ($tuple["ID_helper_2"] != NULL): ?>
-                                            <p class="card-text">Nama Helper: <?= $tuple["nama_helper_2"] ?></p>
-                                        <?php else: ?>
-                                            <p class="card-text">Nama Helper: NULL</p>
-                                        <?php endif;?>
-                                    <?php elseif($tuple["jumlah_helper"] == 1): ?>
-                                        <?php if ($tuple["ID_helper_1"] != NULL): ?>
-                                            <p class="card-text">Nama Helper: <?= $tuple["nama_helper_1"] ?></p>
-                                        <?php else: ?>
-                                            <p class="card-text">Nama Helper: NULL</p>
-                                        <?php endif;?>
-                                    <?php endif;?>
-                                    <p class="card-text">Total Harga: Rp<?= $tuple["harga_peminjaman"] ?></p>
+                                    <p class="card-text">Total Harga Peminjaman: Rp<?= $tuple["harga_peminjaman"] ?></p>
+                                    <p class="card-text">Realisasi Tanggal Pengembalian: <?= $tuple["tanggal_pengembalian_sebenarnya"] ?></p>
+                                    <p class="card-text">Denda Per Hari: Rp<?= $tuple["denda_per_hari"] ?></p>
+                                    <p class="card-text">Total Biaya Denda Keterlambatan: Rp<?= $tuple["jumlah_denda"] ?></p>
                                 </div>
                             </div>
                         </div>

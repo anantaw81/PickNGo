@@ -518,4 +518,24 @@ function update_password($record, $password, $id_akun){
 	
 }
 
+function pengembalian($id_peminjaman, $denda_per_hari, $tgl_seharusnya) {
+	date_default_timezone_set('Asia/Makassar');
+	$tanggal_saat_ini = date("Y-m-d");
+	$query = "INSERT INTO pengembalian VALUES('', $id_peminjaman, '$tgl_seharusnya', '$tanggal_saat_ini', $denda_per_hari);";
+	if(execute_query($query)) {
+		return true;
+	} else{
+		return false;
+	}
+}
+
+function blokir_pelanggan($id_akun) {
+	$query = "UPDATE akun_pelanggan SET status_akun = 'not valid' WHERE ID_akun = $id_akun;";
+	if(execute_query($query)) {
+		return true;
+	} else{
+		return false;
+	}
+}
+
 ?>

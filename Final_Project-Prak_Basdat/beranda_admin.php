@@ -1,44 +1,22 @@
 <?php 
 	session_start();
 	require 'functions.php';
-	$tuples = read("SELECT tipe_kendaraan.ID_model, model, manufaktur, harga_sewa, gambar, jumlah_unit FROM tipe_kendaraan LEFT JOIN (SELECT ID_model, COUNT(ID_kendaraan) AS jumlah_unit FROM unit_kendaraan GROUP BY ID_model) AS n ON tipe_kendaraan.ID_model = n.ID_model;");
+	// $tuples = read("SELECT tipe_kendaraan.ID_model, model, manufaktur, harga_sewa, gambar, jumlah_unit FROM tipe_kendaraan LEFT JOIN (SELECT ID_model, COUNT(ID_kendaraan) AS jumlah_unit FROM unit_kendaraan GROUP BY ID_model) AS n ON tipe_kendaraan.ID_model = n.ID_model ORDER BY harga_sewa;");
 	if(!isset($_SESSION["login_admin"])) {
 		header("location: form_login.php");
 		exit;
 	}
 
-  if(isset($_POST["submit"])) {
-    $insert_status = null;
-    $insert_status = insert_vehicle($_POST, $_FILES);
-    if (isset($insert_status)) {
-      if ($insert_status === true) {
-        $_SESSION["bool_status_input"] = true;
-      } else {
-        $_SESSION["bool_status_input"] = false;
-      }
-      header("location: beranda_admin.php");
-      exit;
-    }
-  }
-
-  if(isset($_POST["submit-update"])) {
-    $update_status = null;
-    $update_status = update_vehicle($_POST, $_FILES);
-    if (isset($update_status)) {
-      if ($update_status === true) {
-        $_SESSION["bool_status_update"] = true;
-      } else {
-        $_SESSION["bool_status_update"] = false;
-      }
-      header("location: beranda_admin.php");
-      exit;
-    }
-  }
-
-  if(isset($_POST["search-model-beranda-admin"])) {
-    $keyword = $_POST["keyword-search-model-beranda-admin"];
-    $tuples = read("SELECT tipe_kendaraan.ID_model, model, manufaktur, harga_sewa, gambar, jumlah_unit FROM tipe_kendaraan LEFT JOIN (SELECT ID_model, COUNT(ID_kendaraan) AS jumlah_unit FROM unit_kendaraan GROUP BY ID_model) AS n ON tipe_kendaraan.ID_model = n.ID_model WHERE model LIKE '%$keyword%';");
-  }
+  $pelanggan_baru = read("SELECT COUNT(*) AS jumlah_pelanggan_baru FROM data_pelanggan_baru;");
+  $total_pelanggan= read("SELECT COUNT(*) AS jumlah_pelanggan FROM akun_pelanggan;");
+  $total_driver = read("SELECT COUNT(*) AS jumlah_driver FROM driver");
+  $total_helper = read("SELECT COUNT(*) AS jumlah_helper FROM helper");
+  $request_peminjaman = read("SELECT COUNT(*) AS request_peminjaman FROM request_peminjaman WHERE status_peminjaman = 'not accepted yet';");
+  $menunggu_pembayaran = read("SELECT COUNT(*) AS menunggu_pembayaran FROM request_peminjaman WHERE status_peminjaman = 'accepted' AND gambar_bukti_pembayaran = NULL;"); // sudah accepted namun belum mengunggah foto
+  $pembayaran_baru = read("SELECT COUNT(*) AS pembayaran_baru FROM request_peminjaman WHERE status_peminjaman = 'accepted' AND gambar_bukti_pembayaran != NULL;");
+  $total_peminjaman = read("SELECT COUNT(*) AS total_peminjaman FROM peminjaman;");
+  $total_model_kendaraan = read("SELECT COUNT(*) AS total_model_kendaraan FROM tipe_kendaraan;");
+  $total_unit_kendaraan = read("SELECT COUNT(*) AS total_unit_kendaraan FROM unit_kendaraan;");
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +34,7 @@
   <body>
   	<input type="checkbox" id="hamburger-menu">
   	<nav>
-  		<a href="index.php" class="logo">Pick N Go</a>
+  		<a href="index.php" class="logo"><img src="Images/Logo/logo.png" style="max-height:60px;" class="img-fluid"></a>
   		<button type="button" id = "logout-button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLogout">
         Logout
       </button>
@@ -65,113 +43,162 @@
 
   	<div class="sidebar">
   		<h2> Admin </h2>
-  		<a href="beranda_admin.php" style="background-color: #b34509;"><i class="fa fa-truck"></i><span>List Kendaraan</span></a>
+  		<a href="beranda_admin.php" style="background-color: #b34509;"><i class="fa fa-home"></i><span>Beranda</span></a>
+      <a href="list_model_kendaraan_admin.php"><i class="fa fa-truck"></i><span>List Kendaraan</span></a>
   		<a href="list_driver_admin.php"><i class = "fa fa-address-book"></i><span>List Driver</span></a>
   		<a href="list_helper_admin.php"><i class = "fa fa-address-book-o"></i><span>List Helper</span></a>
+      <a href="list_pelanggan_admin.php"><i class = "fa fa-user"></i><span>List Pelanggan</span></a>
   		<a href="request_peminjaman_admin.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="validasi_user_admin.php"><i class = "fa fa-check-circle"></i><span>Validasi Pengguna</span></a>
       <a href="validasi_pembayaran_admin.php"><i class = "fa fa-money"></i><span>Validasi Pembayaran</span></a>
   		<a href="list_peminjaman_admin.php"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
+      <a href="list_pengembalian_admin.php"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
   		<a href="" class = "logout"><span>Logout</span></a>
   	</div>
 
     <div class = "content">
-    <form action="" method="post" autocomplete="off" class="search-form">
-        <div class="utility-bar">
-            <div></div>
-            <div class="search-bar">
-                <input type="text" placeholder = "Cari berdasarkan nama" class="search-field" name="keyword-search-model-beranda-admin">
-                <button type="submit" class="fa fa-search search-button" name="search-model-beranda-admin"></button>
+      <div class="row">
+        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
+          <div class="row g-0">
+            <div class="col-md-4 text-center">
+              <i class = "fa fa-plus-circle " style="line-height: 88px; font-size: 3rem; color: green;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
             </div>
-        </div>
-      </form>
-
-      <?php if(isset($_SESSION["bool_status_input"]) && $_SESSION["bool_status_input"] === true): ?>
-        <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-success alert-dismissible fade show mx-auto" role="alert">
-            Model Pickup/Truk berhasil ditambahkan!
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <?php unset($_SESSION["bool_status_input"]); ?>
-      <?php elseif(isset($_SESSION["bool_status_input"]) && $_SESSION["bool_status_input"] === false): ?>
-          <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-danger alert-dismissible fade show mx-auto" role="alert">
-              File yang diunggah bukan .jpg/.jpeg/.png atau melebihi 500KB! Model Pickup/Truk tidak berhasl ditambahkan!
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        <?php unset($_SESSION["bool_status_input"]); ?>
-      <?php endif; ?>
-
-      <?php if(isset($_SESSION["bool_status_update"]) && $_SESSION["bool_status_update"] === true): ?>
-        <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-success alert-dismissible fade show mx-auto" role="alert">
-            Model pickup/truk berhasil diperbaharui!
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <?php unset($_SESSION["bool_status_update"]); ?>
-      <?php elseif(isset($_SESSION["bool_status_update"]) && $_SESSION["bool_status_update"] === false): ?>
-          <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-danger alert-dismissible fade show mx-auto" role="alert">
-              File yang diunggah bukan .jpg/.jpeg/.png atau melebihi 500KB! Data model pickup/truk tidak berhasil diperbaharui!
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        <?php unset($_SESSION["bool_status_update"]); ?>
-      <?php endif; ?>
-
-      <?php if(isset($_SESSION["delete_bool"]) && $_SESSION["delete_bool"] === true): ?>
-        <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-success alert-dismissible fade show mx-auto" role="alert">
-            Model pickup/truk berhasil dihapuskan!
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <?php unset($_SESSION["delete_bool"]); ?>
-      <?php elseif(isset($_SESSION["delete_bool"]) && $_SESSION["delete_bool"] === false): ?>
-          <div class="col-xxl-11 mt-5 col-md-10 col-sm-10 col-lg-10 col-9 alert alert-danger alert-dismissible fade show mx-auto" role="alert">
-              Model pickup/truk tidak berhasil dihapuskan!
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        <?php unset($_SESSION["delete_bool"]); ?>
-      <?php endif; ?>
-
-      <div class="row card-container">
-        <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12">
-            <div class="card mt-5 mx-auto btn" style="width: 18rem; height: 438px;">
-              <i class = "fa fa-plus-circle" style="line-height: 300px; font-size: 7rem; color: green;" data-bs-toggle="modal" data-bs-target="#addVehicleModel"></i>
-              <p>Tambah Model</p>
-            </div>
-        </div>
-        <?php foreach ($tuples as $tuple): ?>
-          <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12">
-            <div class="card mt-5 mx-auto" style="width: 18rem;">
-              <img class="card-img-top" src = "Images/TipeMobil/<?= $tuple["gambar"]; ?>" alt="Card image cap">
+            <div class="col-md-8">
               <div class="card-body">
-                <h5 class="card-title"><?= $tuple["model"] ?></h5>
-              </div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item"><?= $tuple["manufaktur"] ?></li>
-                <?php  
-                	if (is_null($tuple["jumlah_unit"])) {
-                		$tuple["jumlah_unit"] = 0;
-                	}
-                ?>
-                <li class="list-group-item">Jumlah Unit: <?= $tuple["jumlah_unit"] ?></li>
-                <li class="list-group-item">Harga: <?= $tuple["harga_sewa"] ?>/hari</li>
-              </ul>
-              <div class="card-body text-center">
-                <a class="btn btn-primary" href="unit_kendaraan_admin.php?p_k_model=<?= $tuple["ID_model"]; ?>" role="button">Lihat Unit</a>
-                <a class="btn btn-success" href="#" role="button" onclick="updateVehicle('<?= $tuple['ID_model'] ?>', '<?= $tuple['model'] ?>', '<?= $tuple['manufaktur'] ?>', '<?= $tuple['harga_sewa'] ?>')">Ubah</a>
-                <a class="btn btn-danger" href="deletelogic.php?p_k=<?= $tuple["ID_model"]; ?>&type=Kendaraan" role="button" onclick="return confirm('Apakah anda yakin akan menghapus model <?= $tuple["model"] ?>?')">Hapus</a>
+                <h5 class="card-title"><?= $pelanggan_baru[0]["jumlah_pelanggan_baru"]; ?></h5>
+                <p class="card-text">Pengguna Baru</p>
               </div>
             </div>
           </div>
-        <?php endforeach; ?>
+        </div>
+        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
+          <div class="row g-0">
+            <div class="col-md-4 text-center">
+              <i class = "fa fa-user-circle-o " style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title"><?= $total_pelanggan[0]["jumlah_pelanggan"]; ?></h5>
+                <p class="card-text">Total Pengguna</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
+          <div class="row g-0">
+            <div class="col-md-4 text-center">
+              <i class = "fa fa-address-book" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title"><?= $total_driver[0]["jumlah_driver"]; ?></h5>
+                <p class="card-text">Driver</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
+          <div class="row g-0">
+            <div class="col-md-4 text-center">
+              <i class = "fa fa-address-book-o" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title"><?= $total_helper[0]["jumlah_helper"]; ?></h5>
+                <p class="card-text">Helper</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <div class="row">
+        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
+          <div class="row g-0">
+            <div class="col-md-4 text-center">
+              <i class = "fa fa-bar-chart" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title"><?= $request_peminjaman[0]["request_peminjaman"]; ?></h5>
+                <p class="card-text">Request Peminjaman</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
+          <div class="row g-0">
+            <div class="col-md-4 text-center">
+              <i class = "fa fa-clock-o" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title"><?= $menunggu_pembayaran[0]["menunggu_pembayaran"]; ?></h5>
+                <p class="card-text">Menunggu Pembayaran</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
+          <div class="row g-0">
+            <div class="col-md-4 text-center">
+              <i class = "fa fa-credit-card-alt" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title"><?= $pembayaran_baru[0]["pembayaran_baru"]; ?></h5>
+                <p class="card-text">Pembayaran Baru</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
+          <div class="row g-0">
+            <div class="col-md-4 text-center">
+              <i class = "fa fa-calendar-check-o" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title"><?= $total_peminjaman[0]["total_peminjaman"]; ?></h5>
+                <p class="card-text">Total Peminjaman</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
+          <div class="row g-0">
+            <div class="col-md-4 text-center">
+              <i class = "fa fa fa-truck" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title"><?= $total_model_kendaraan[0]["total_model_kendaraan"]; ?></h5>
+                <p class="card-text">Model Pickup/Truk</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
+          <div class="row g-0">
+            <div class="col-md-4 text-center">
+              <i class = "fa fa fa-truck" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title"><?= $total_unit_kendaraan[0]["total_unit_kendaraan"]; ?></h5>
+                <p class="card-text">Unit Pickup/Truk</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    
     <!-- JAVASCRIPT --> 
     <script type="text/javascript">
-      function updateVehicle(id, model, manufaktur, tarif){
-        var myModal = new bootstrap.Modal(document.getElementById('updateForm'));
-        document.getElementById("id-model").value = id;
-        document.getElementById("nama-model-update").value = model;
-        document.getElementById("nama-manufaktur-update").value = manufaktur;
-        document.getElementById("harga-model-update").value = tarif;
-        myModal.show();
-      }
+
     </script>
 
     <!-- Optional JavaScript; choose one of the two! -->
@@ -202,90 +229,5 @@
           </div>
         </div>
       </div>
-
-      <div class="modal fade" id="addVehicleModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Tambahkan Model Pickup/Truk</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-            </button>
-          </div>
-          <div class="modal-body">
-            <form action="" method="post" enctype="multipart/form-data">
-              <div class="form-group">
-                <label for="model-kendaraan" class="col-form-label">Model Pickup/Truk</label>
-                <input type="text" class="form-control" id="model-kendaraan" name="model-kendaraan" required>
-              </div>
-              <div class="form-group">
-                <label for="manufaktur-kendaraan" class="col-form-label">Manufaktur Pickup/Truk</label>
-                <input type="text" class="form-control" id="manufaktur-kendaraan" name="manufaktur-kendaraan" required>
-              </div>
-              <div class="form-group">
-                  <label for="harga-sewa" class="col-form-label">Harga/hari (Rp)</label>
-                  <input type="text" class="form-control" id="harga-sewa" name="harga" required>
-              </div>
-              <div class="form-group">
-                  <label for="gambar-kendaraan" class="col-form-label">Foto Pickup/Truk</label>
-                  <input type="file" class="form-control" id="gambar-kendaraan" name="foto-kendaraan" accept = "image/jpeg, image/jpg, image/png" required>
-              </div>
-              <div class="form-group text-center mt-2">
-                  <input type="checkbox" name="konfirmasi-input" id="konfirmasi-input" value="agree" required>
-                  <label for="konfirmasi-input" class="col-form-label">Konfirmasi Penambahan Model Kendaraan</label>
-              </div>
-              <div class="text-center mt-2">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
-                <button id="submit" type="submit" class="btn btn-success" name="submit">Tambahkan</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal fade" id="updateForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ubah Data Model Pickup/Truk</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-              <!-- <span aria-hidden="true">&times;</span> -->
-            </button>
-          </div>
-          <div class="modal-body">
-            <form action="" method="post" enctype="multipart/form-data" id="updatehelperForm">
-              <div class="form-group">
-                <label for="id-model" class="col-form-label d-none">ID Model</label>
-                <input type="text" class="form-control d-none" id="id-model" name="id-model" readonly>
-              </div>
-              <div class="form-group">
-                <label for="nama-model-update" class="col-form-label">Model Pickup/Truk</label>
-                <input type="text" class="form-control" id="nama-model-update" name="nama-model-update" required>
-              </div>
-              <div class="form-group">
-                <label for="nama-manufaktur-update" class="col-form-label">Manufaktur Pickup/Truk</label>
-                <input type="text" class="form-control" id="nama-manufaktur-update" name="nama-manufaktur-update" required>
-              </div>
-              <div class="form-group">
-                  <label for="harga-model-update" class="col-form-label">Harga/hari (Rp)</label>
-                  <input type="text" class="form-control" id="harga-model-update" name="harga-model-update" required>
-              </div>
-              <div class="form-group">
-                  <label for="gambar-model-update" class="col-form-label">Unggah Foto Baru</label>
-                  <input type="file" class="form-control" id="gambar-model-update" name="foto-model-update" accept = "image/jpeg, image/jpg, image/png">
-              </div>
-              <div class="form-group text-center mt-2">
-                  <input type="checkbox" name="konfirmasi-input" id="konfirmasi-input" value="agree" required>
-                  <label for="konfirmasi-input" class="col-form-label">Konfirmasi Perubahan Data Model Pickup/Truk</label>
-              </div>
-              <div class="text-center mt-2">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
-                <button id="submit-update" type="submit" class="btn btn-success" name="submit-update">Perbaharui</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
   </body>
 </html>

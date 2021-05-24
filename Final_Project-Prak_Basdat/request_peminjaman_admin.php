@@ -5,7 +5,16 @@
 		header("location: form_login.php");
 		exit;
 	}
-  $tuples = read("SELECT * FROM request_peminjaman WHERE status_peminjaman = 'not accepted yet' ORDER BY ID_peminjaman;");
+  $jumlah_data_per_page = 10;
+  $jumlah_data = read("SELECT COUNT(*) AS jumlah_data FROM request_peminjaman WHERE status_peminjaman = 'not accepted yet' ORDER BY ID_peminjaman");
+  $jumlah_page = ceil($jumlah_data[0]["jumlah_data"]/$jumlah_data_per_page);
+  if(isset($_GET["page_request_peminjaman_admin"])) {
+    $page_saat_ini = $_GET["page_request_peminjaman_admin"];
+  } else {
+    $page_saat_ini = 1;
+  }
+  $batas_bawah = $jumlah_data_per_page*$page_saat_ini-$jumlah_data_per_page;
+  $tuples = read("SELECT * FROM request_peminjaman WHERE status_peminjaman = 'not accepted yet' ORDER BY ID_peminjaman LIMIT $batas_bawah, $jumlah_data_per_page;");
 
   if (isset($_POST["submit-acc-request"])) {
     $accept_status = accept_peminjaman($_POST);
@@ -52,7 +61,7 @@
 <body>
     <input type="checkbox" id="hamburger-menu">
   	<nav>
-  		<a href="index.php" class="logo">Pick N Go</a>
+  		<a href="index.php" class="logo"><img src="Images/Logo/logo.png" style="max-height:60px;" class="img-fluid"></a>
   		<button type="button" id = "logout-button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLogout">
         Logout
       </button>
@@ -61,13 +70,16 @@
 
   	<div class="sidebar">
   		<h2> Admin </h2>	
-  		<a href="beranda_admin.php"><i class="fa fa-truck"></i><span>List Kendaraan</span></a>
+  		<a href="beranda_admin.php"><i class="fa fa-home"></i><span>Beranda</span></a>
+      <a href="list_model_kendaraan_admin.php"><i class="fa fa-truck"></i><span>List Kendaraan</span></a>
   		<a href="list_driver_admin.php"><i class = "fa fa-address-book"></i><span>List Driver</span></a>
   		<a href="list_helper_admin.php"><i class = "fa fa-address-book-o"></i><span>List Helper</span></a>
+      <a href="list_pelanggan_admin.php"><i class = "fa fa-user"></i><span>List Pelanggan</span></a>
   		<a href="request_peminjaman_admin.php" style="background-color: #b34509;"><i class = "fa fa-hourglass" ></i><span>Request Peminjaman</span></a>
   		<a href="validasi_user_admin.php"><i class = "fa fa-check-circle"></i><span>Validasi Pengguna</span></a>
       <a href="validasi_pembayaran_admin.php"><i class = "fa fa-money"></i><span>Validasi Pembayaran</span></a>
   		<a href="list_peminjaman_admin.php"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
+      <a href="list_pengembalian_admin.php"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
   		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
   	</div>
 
@@ -105,11 +117,12 @@
           </div>
           <?php unset($_SESSION["bool_status_accept"]); ?>
         <?php endif; ?>
-        <div class="table-responsive mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 table-tuples">
-            <table class="table">
+        <div class="table-responsive mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 table-tuples shadow">
+            <table class="table shadow">
                 <thead class = "text-center" style="background-color: #000033; color: white;">
                     <th>#</th>
                     <th>Nama</th>
+                    <th>Username</th>
                     <th style="width: 16.66%">Alamat</th>
                     <th>Model Kendaraan</th>
                     <th>Tanggal Peminjaman</th>
@@ -129,6 +142,7 @@
                     <tr>
                         <td><?= $counter ?></td>
                         <td><?= $tuple["nama"] ?></td>
+                        <td><?= $tuple["username"] ?></td>
                         <td><?= $tuple["alamat"] ?></td>
                         <td><?= $tuple["model"] ?></td>
                         <td><?= $tuple["tanggal_peminjaman"] ?></td>
@@ -145,6 +159,41 @@
                     <?php endforeach; ?>
                 </tbody>
             </table>
+        </div>
+        <div class="row mx-auto ms-5 ps-5">
+          <nav aria-label="Page navigation example" class="pagination-button" style="background-color: white;">
+            <ul class="pagination pagination-sm offset-xxl-4" style="background-color: white;">
+              <?php if($page_saat_ini == 1): ?>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+              <?php else: ?>
+                <li class="page-item">
+                  <a class="page-link" href="request_peminjaman_admin.php?page_request_peminjaman_admin=<?= $page_saat_ini-1; ?>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+              <?php endif;?>
+              <?php for($i=1; $i<=$jumlah_page; $i++):?>
+                <li class="page-item"><a class="page-link" href="request_peminjaman_admin.php?page_request_peminjaman_admin=<?= $i; ?>"><?= $i ?></a></li>
+              <?php endfor;?>
+              <?php if($page_saat_ini == $jumlah_page): ?>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              <?php else: ?>
+                <li class="page-item">
+                  <a class="page-link" href="request_peminjaman_admin.php?page_request_peminjaman_admin=<?= $page_saat_ini+1; ?>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              <?php endif;?>
+            </ul>
+          </nav>
         </div>
     </div>
 
@@ -219,6 +268,7 @@
           </div>
         </div>
       </div>
+      
     </div>
 
     <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -33,7 +33,7 @@
   <body>
     <input type="checkbox" id="hamburger-menu">
   	<nav>
-  		<a href="index.php" class="logo">Pick N Go</a>
+  		<a href="index.php" class="logo"><img src="Images/Logo/logo.png" style="max-height:60px;" class="img-fluid"></a>
       <button type="button" id = "logout-button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Logout
       </button>
@@ -46,17 +46,18 @@
   			<?= $_SESSION["username"]?>
   		</h2>
   		<a href="profil_user.php"><i class="fa fa-user"></i><span>Profil</span></a>
-  		<a href="beranda_user.php" style="background-color: #b34509;"><i class="fa fa-truck"></i><span>Beranda</span></a>
+  		<a href="beranda_user.php" style="background-color: #b34509;"><i class="fa fa-home"></i><span>Beranda</span></a>
   		<a href="request_peminjaman_user.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="list_peminjaman_user.php"><i class = "fa fa-credit-card-alt"></i><span>List Peminjaman</span></a>
+      <a href="list_pengembalian_user.php"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
   		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>Logout</span></a>
   	</div>
     <div class = "content">
-      <div class="mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 table-tuples">
+      <div class="mt-5 form-floating c-container mx-auto table-tuples">
         <div class="wrapper mb-2">
           <a href = "beranda_user.php" class="btn btn-secondary">kembali</a>
         </div>
-        <div class="card mb-3">
+        <div class="card mb-3 shadow-sm">
           <div class="row g-0">
             <div class="col-md-4 mx-auto d-block" style = "min-width: 286px;">
               <img class="mx-auto d-block" src="Images/TipeMobil/<?= $model_data[0]["gambar"]; ?>" alt="...">
@@ -67,7 +68,7 @@
               </div>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item">Manufaktur: <?= $model_data[0]["manufaktur"] ?></li>
-                <li class="list-group-item">Harga: <?= $model_data[0]["harga_sewa"] ?>/hari</li>
+                <li class="list-group-item">Harga: Rp. <?= $model_data[0]["harga_sewa"] ?>/hari</li>
               </ul>
             </div>
           </div>
@@ -96,16 +97,15 @@
                 <h2>
                 Aturan Peminjaman
                 </h2>
-                <p>
-                1. Bagi peminjaman yang tidak menggunakan jasa driver dan helper, kendaraan dapat dipinjam dan dikembalikan di kantor Pick N Go mulai dari pukul 08.00 WITA hingga pukul 17.00 WITA.<br>
-                2. Bagi peminjaman yang tidak menggunakan jasa driver dan helper, kendaraan akan dipinjamkan secara lepas kunci. Sehingga, pastikan bahwa anda membawa sim anda ke kantor Pick N Go saat akan mengambil kendaraan pinjaman anda. <br>
-                3. Bagi peminjaman yang menggunakan jasa driver dan helper, kendaraan akan diantarkan ke alamat yang anda berikan pada proses registrasi. Sehingga pastikan alamat tersebut adalah alamat tempat kendaraan akan diantarkan. <br>
-                4. Bagi peminjaman yang menggunakan jasa driver dan helper, kendaraan akan diantarkan ke lokasi anda pada pukul 08.00 WITA dan layanan dapat digunakan hingga pukul 17.00 WITA. <br>
-                
-                </p>
+                <ol type="1">
+                  <li>Bagi peminjaman yang tidak menggunakan jasa driver dan helper, kendaraan dapat dipinjam dan dikembalikan di kantor Pick N Go mulai dari pukul 08.00 WITA hingga pukul 17.00 WITA.</li>
+                  <li>Bagi peminjaman yang tidak menggunakan jasa driver dan helper, kendaraan akan dipinjamkan secara lepas kunci. Sehingga, pastikan bahwa anda membawa sim anda ke kantor Pick N Go saat akan mengambil kendaraan pinjaman anda.</li>
+                  <li>Bagi peminjaman yang menggunakan jasa driver dan helper, kendaraan akan diantarkan ke alamat yang anda berikan pada proses registrasi. Sehingga pastikan alamat tersebut adalah alamat tempat kendaraan akan diantarkan. </li>
+                  <li>Bagi peminjaman yang menggunakan jasa driver dan helper, kendaraan akan diantarkan ke lokasi anda pada pukul 08.00 WITA dan layanan dapat digunakan hingga pukul 17.00 WITA.</li>
+                </ol>
                 
             </div>
-            <div class="col-xxl-4">
+            <div class="col-xxl-4 form-s shadow-sm">
             
             <form method="POST" onsubmit="reserveConfirmation(<?= $harga_driver ?>, <?= $harga_helper ?>, <?= $model_data[0]["harga_sewa"] ?>)">
                 <div class="mb-3">
