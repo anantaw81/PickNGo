@@ -2,11 +2,13 @@
 
 require 'functions.php';
 $message = 0;
+$data_tidak_lengkap = 0;
+$data_kosong = 0;
 if (isset($_POST["submit"])) {
-  if (ctype_space($_POST["NIK"]) && ctype_space($_POST["nama"]) && ctype_space($_POST["alamat"]) && ctype_space($_POST["nomor_telepon"]&& ctype_space($_POST["username"])) && ctype_space($_POST["password_akun_login"])) {
-    echo "<script> alert('Tolong isi data anda dengan benar!'); </script>";
+  if (ctype_space($_POST["NIK"]) || ctype_space($_POST["nama"]) || ctype_space($_POST["alamat"]) || ctype_space($_POST["nomor_telepon"] || ctype_space($_POST["username"])) || ctype_space($_POST["password_akun_login"])) {
+    $data_kosong = 1;
   } elseif ($_POST['asal_kabupaten'] === "Pilih satu") {
-    echo "<script> alert('Tolong isi data field Kabupaten/Kota dengan benar!'); </script>";
+    $data_tidak_lengkap = 1;
   } else {
       $message = register_new_user($_POST);
   }
@@ -25,7 +27,8 @@ if (isset($_POST["submit"])) {
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <link rel="icon" href="Images/Logo/logo_square.png" type="image/x-icon" />
+    <title>Pick N Go</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -35,9 +38,8 @@ if (isset($_POST["submit"])) {
         </button>
         <div class="collapse navbar-collapse ms-3" id="navbarTogglerDemo01">
             <ul class = "navbar-nav mx-auto">
-                <li class="nav-item me-5"><a class = "nav-link" href="">Mobil Pickup</a></li>
-                <li class="nav-item me-5"><a class = "nav-link" href="">Truk</a></li>
-                <li class="nav-item"><a class = "nav-link" href="">Hubungi Kita</a></li>
+              <li class="nav-item me-5"><a class = "nav-link" href="index.php#teratas">Pickup dan Truck</a></li>
+              <li class="nav-item"><a class = "nav-link" href="index.php#hubungi" >Hubungi Kami</a></li>
             </ul>
             <a class="btn btn-primary btn-dark me-3" href="form_registrasi.php" role="button">Signup</a>
             <a class="btn btn-primary btn-dark me-3" href="form_login.php" role="button">Login</a>
@@ -45,6 +47,18 @@ if (isset($_POST["submit"])) {
     </nav>
 
     <h1 class="text-center mb-4 mt-4">Registration</h1>
+    <?php if($data_kosong == 1): ?>
+      <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4 alert alert-danger alert-dismissible fade show" role="alert">
+            Lengkapi seluruh field dengan benar!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <?php endif; ?>
+    <?php if($data_tidak_lengkap == 1): ?>
+      <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4 alert alert-danger alert-dismissible fade show" role="alert">
+            Data asal kabupaten belum lengkap! lengkapi seluruh field!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <?php endif; ?>
     <?php if($message == 1): ?>
       <div class="mb-3 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4 alert alert-danger alert-dismissible fade show" role="alert">
             Password konfirmasi tidak sama!

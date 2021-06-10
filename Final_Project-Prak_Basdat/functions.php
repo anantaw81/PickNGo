@@ -256,25 +256,33 @@ function delete_helper($helper_p_k) {
 
 function delete_vehicle($model_p_k) {
 	global $conn;
-	$query = "DELETE FROM unit_kendaraan WHERE ID_model = $model_p_k;";
-	if(execute_query($query)){
+	$res = read("SELECT COUNT(*) AS jumlah_unit FROM unit_kendaraan WHERE ID_model = $model_p_k;");
+	if($res[0]["jumlah_unit"] == 0) {
 		$query = "DELETE FROM tipe_kendaraan WHERE ID_model = $model_p_k;";
 		if(execute_query($query)){
 			return true;
 		}
+	} else {
+		$query = "DELETE FROM unit_kendaraan WHERE ID_model = $model_p_k; DELETE FROM tipe_kendaraan WHERE ID_model = $model_p_k;";
+		if(execute_query($query)){
+			if(execute_multi_query($query)){
+				return true;
+			}
+		}
 	}
 	return false;
+
 }
 
 function check_username($uname, $tabel) {
 	global $conn;
-	mysqli_query($conn, "SELECT * FROM $tabel WHERE username = \"$uname\";");
+	mysqli_query($conn, "SELECT * FROM $tabel WHERE username = '$uname';");
 	return mysqli_affected_rows($conn);
 }
 
 function check_NIK($nik) {
 	global $conn;
-	mysqli_query($conn, "SELECT * FROM akun_pelanggan WHERE NIK = \"$nik\";");
+	mysqli_query($conn, "SELECT * FROM pelanggan WHERE NIK = '$nik';");
 	return mysqli_affected_rows($conn);
 }
 
@@ -313,9 +321,9 @@ function user_validation($ID_akun, $status) {
 	return execute_query($query);
 }
 
-function payment_validation($ID_akun, $status) {
+function payment_validation($id_peminjaman, $status) {
 	global $conn;
-	$query = "UPDATE peminjaman SET status_peminjaman = '$status' WHERE ID_peminjaman = $ID_akun;";
+	$query = "UPDATE peminjaman SET status_peminjaman = '$status' WHERE ID_peminjaman = $id_peminjaman;";
 	return execute_query($query);
 }
 
@@ -462,10 +470,10 @@ function update_biodata($record, $id_pelanggan, $nik_pelanggan, $id_akun) {
 			return false;
 		}
 		$query = "UPDATE pelanggan SET NIK = '$NIK', nama = '$nama', alamat = '$alamat', kabupaten = '$kabupaten', jenis_kelamin = '$jenis_kelamin', nomor_telepon = '$nomor_telepon' WHERE ID_pelanggan = $id_pelanggan; UPDATE akun_pelanggan SET status_akun = 'not verified' WHERE ID_akun = $id_akun;";
-		$_SESSION["status_akun"] = "not verified";
 	} else {
-		$query = "UPDATE pelanggan SET nama = '$nama', alamat = '$alamat', kabupaten = '$kabupaten', jenis_kelamin = '$jenis_kelamin', nomor_telepon = '$nomor_telepon' WHERE ID_pelanggan = $id_pelanggan;";
+		$query = "UPDATE pelanggan SET nama = '$nama', alamat = '$alamat', kabupaten = '$kabupaten', jenis_kelamin = '$jenis_kelamin', nomor_telepon = '$nomor_telepon' WHERE ID_pelanggan = $id_pelanggan; UPDATE akun_pelanggan SET status_akun = 'not verified' WHERE ID_akun = $id_akun;";
 	}
+	$_SESSION["status_akun"] = "not verified";
 	if(execute_multi_query($query)) {
 		return true;
 	} else{

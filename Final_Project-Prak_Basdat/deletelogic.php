@@ -14,7 +14,7 @@
 		} else{
 			$_SESSION["delete_bool"] = false;
 		}
-		header("location: beranda_admin.php");
+		header("location: list_model_kendaraan_admin.php");
 	} else {
 		if (delete_helper($_GET["p_k"])) {
 			$_SESSION["delete_bool"] = true;

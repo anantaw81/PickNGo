@@ -5,17 +5,8 @@
 		header("location: form_login.php");
 		exit;
 	}
-  
-  $jumlah_data_per_page = 10; 
-  $jumlah_data = read("SELECT COUNT(*) AS jumlah_data FROM pelanggan INNER JOIN akun_pelanggan ON pelanggan.ID_pelanggan = akun_pelanggan.ID_pelanggan WHERE status_akun = 'valid';");
-  $jumlah_page = ceil($jumlah_data[0]["jumlah_data"]/$jumlah_data_per_page);
-  if(isset($_GET["page_list_pelanggan"])) {
-    $page_saat_ini = $_GET["page_list_pelanggan"];
-  } else {
-    $page_saat_ini = 1;
-  }
-  $batas_bawah = $jumlah_data_per_page*$page_saat_ini-$jumlah_data_per_page;
-  $tuples = read("SELECT pelanggan.*, akun_pelanggan.ID_akun, akun_pelanggan.username FROM pelanggan INNER JOIN akun_pelanggan ON pelanggan.ID_pelanggan = akun_pelanggan.ID_pelanggan WHERE status_akun = 'valid' LIMIT $batas_bawah, $jumlah_data_per_page;");
+
+  $tuples = read("SELECT pelanggan.*, akun_pelanggan.ID_akun, akun_pelanggan.username FROM pelanggan INNER JOIN akun_pelanggan ON pelanggan.ID_pelanggan = akun_pelanggan.ID_pelanggan WHERE status_akun = 'valid'");
   if(isset($_POST["submit-blokir"])) {
       $status_pemblokiran = blokir_pelanggan($_POST["ID-akun-blokir"]);
       if ($status_pemblokiran === true) {
@@ -28,14 +19,7 @@
   }
   if(isset($_POST["search-list-pelanggan"])) {
     $keyword = $_POST["keyword-search-list-pelanggan"];
-    $jumlah_data = read("SELECT COUNT(*) AS jumlah_data FROM data_pelanggan_baru;");
-    $jumlah_page = ceil($jumlah_data[0]["jumlah_data"]/$jumlah_data_per_page);
-    if(isset($_GET["page_list_pelanggan"])) {
-        $page_saat_ini = $_GET["page_list_pelanggan"];
-    } else {
-        $page_saat_ini = 1;
-    }
-    $tuples = read("SELECT pelanggan.*, akun_pelanggan.ID_akun, akun_pelanggan.username FROM pelanggan INNER JOIN akun_pelanggan ON pelanggan.ID_pelanggan = akun_pelanggan.ID_pelanggan WHERE status_akun = 'valid' LIMIT $batas_bawah, $jumlah_data_per_page;");
+    $tuples = read("SELECT pelanggan.*, akun_pelanggan.ID_akun, akun_pelanggan.username FROM pelanggan INNER JOIN akun_pelanggan ON pelanggan.ID_pelanggan = akun_pelanggan.ID_pelanggan WHERE (status_akun = 'valid') AND (nama LIKE '%$keyword%' OR username LIKE '%$keyword%' OR alamat LIKE '%$keyword%' OR kabupaten LIKE '%$keyword%');");
   }
 ?>
 
@@ -49,7 +33,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="styling.css">
-    <title>Hello, world!</title>
+    <link rel="icon" href="Images/Logo/logo_square.png" type="image/x-icon" />
+    <title>Pick N Go</title>
 </head>
 <body>
     <input type="checkbox" id="hamburger-menu">
@@ -83,7 +68,7 @@
                 <div class="input-group">
                 <div class="form-floating">
                     <input type="text" class="form-control" id="floatingInput" placeholder="Cari berdasarkan nama" name="keyword-search-list-pelanggan">
-                    <label for="floatingInput">Cari Berdasarkan Nama/Username/Alamat</label>
+                    <label for="floatingInput">Cari Berdasarkan Nama/Username/Alamat/Kabupaten</label>
                 </div>
                 <button type="submit" class="fa fa-search btn btn-dark searchbtn" name="search-list-pelanggan"></button>
                 </div>
@@ -133,42 +118,7 @@
                 </tbody>
             </table>
         </div>
-        
-        <div class="row mx-auto ms-5 ps-5">
-        <nav aria-label="Page navigation example" class="pagination-button" style="background-color: white;">
-          <ul class="pagination pagination-sm offset-xxl-4" style="background-color: white;">
-            <?php if($page_saat_ini == 1): ?>
-              <li class="page-item disabled">
-                <a class="page-link" href="#" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
-              </li>
-            <?php else: ?>
-              <li class="page-item">
-                <a class="page-link" href="list_pelanggan_admin.php?page_list_pelanggan=<?= $page_saat_ini-1; ?>" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
-              </li>
-            <?php endif;?>
-            <?php for($i=1; $i<=$jumlah_page; $i++):?>
-              <li class="page-item"><a class="page-link" href="list_pelanggan_admin.php?page_list_pelanggan=<?= $i; ?>"><?= $i ?></a></li>
-            <?php endfor;?>
-            <?php if($page_saat_ini == $jumlah_page): ?>
-              <li class="page-item disabled">
-                <a class="page-link" href="#" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
-            <?php else: ?>
-              <li class="page-item">
-                <a class="page-link" href="list_pelanggan_admin.php?page_list_pelanggan=<?= $page_saat_ini+1; ?>" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
-            <?php endif;?>
-          </ul>
-        </nav>
-      </div>
+
     </div>
     
 

@@ -12,8 +12,8 @@
   $total_driver = read("SELECT COUNT(*) AS jumlah_driver FROM driver");
   $total_helper = read("SELECT COUNT(*) AS jumlah_helper FROM helper");
   $request_peminjaman = read("SELECT COUNT(*) AS request_peminjaman FROM request_peminjaman WHERE status_peminjaman = 'not accepted yet';");
-  $menunggu_pembayaran = read("SELECT COUNT(*) AS menunggu_pembayaran FROM request_peminjaman WHERE status_peminjaman = 'accepted' AND gambar_bukti_pembayaran = NULL;"); // sudah accepted namun belum mengunggah foto
-  $pembayaran_baru = read("SELECT COUNT(*) AS pembayaran_baru FROM request_peminjaman WHERE status_peminjaman = 'accepted' AND gambar_bukti_pembayaran != NULL;");
+  $menunggu_pembayaran = read("SELECT COUNT(*) AS menunggu_pembayaran FROM request_peminjaman WHERE status_peminjaman = 'accepted' AND gambar_bukti_pembayaran IS NULL;"); // sudah accepted namun belum mengunggah foto
+  $pembayaran_baru = read("SELECT COUNT(*) AS pembayaran_baru FROM request_peminjaman WHERE status_peminjaman = 'accepted' AND gambar_bukti_pembayaran IS NOT NULL;");
   $total_peminjaman = read("SELECT COUNT(*) AS total_peminjaman FROM peminjaman;");
   $total_model_kendaraan = read("SELECT COUNT(*) AS total_model_kendaraan FROM tipe_kendaraan;");
   $total_unit_kendaraan = read("SELECT COUNT(*) AS total_unit_kendaraan FROM unit_kendaraan;");
@@ -29,7 +29,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="styling.css">
-    <title>Hello, world!</title>
+    <link rel="icon" href="Images/Logo/logo_square.png" type="image/x-icon" />
+    <title>Pick N Go</title>
   </head>
   <body>
   	<input type="checkbox" id="hamburger-menu">
@@ -56,145 +57,116 @@
   		<a href="" class = "logout"><span>Logout</span></a>
   	</div>
 
-    <div class = "content">
-      <div class="row">
-        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
-          <div class="row g-0">
-            <div class="col-md-4 text-center">
-              <i class = "fa fa-plus-circle " style="line-height: 88px; font-size: 3rem; color: green;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><?= $pelanggan_baru[0]["jumlah_pelanggan_baru"]; ?></h5>
-                <p class="card-text">Pengguna Baru</p>
-              </div>
+    <div class="content">
+      <div class="row gx-4 row-cols-3 justify-content-evenly align-items-center shadow mx-auto" style="margin:3%; max-width:70%; padding:3%; background-color:rgba(0,3,51,0.7660014689469538); border-radius:30px;">
+        <div class="col-4 sm-3" style="width:20%;" >
+          <div class="row" style="padding-bottom: 3%;">
+            <div class="card-body ">
+              <h5 class="card-title text-center"><i class="fa fa-users" aria-hidden="true" style="font-size:5vw; color:white;"></i></h5>
+              <h3 class="card-text fs-2 text-center" style=" padding-top:1vh; color:white;">PENGGUNA</h3>
             </div>
           </div>
         </div>
-        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
-          <div class="row g-0">
-            <div class="col-md-4 text-center">
-              <i class = "fa fa-user-circle-o " style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><?= $total_pelanggan[0]["jumlah_pelanggan"]; ?></h5>
-                <p class="card-text">Total Pengguna</p>
+        <div class="col-4 sm-3" style="width:20%;">
+            <div class="row" style="padding-bottom: 3%;">
+              <div class="col card-body shadow" style="border-radius:20px; padding:15%; background-color:rgba(252,124,54,0.8690826672465861);">
+                <h5 class="card-title fs-1 fw-bolder text-center"><?= $pelanggan_baru[0]["jumlah_pelanggan_baru"]; ?></h5>
+                <h3 class="card-text fs-4 text-center" style=" padding-top:1vh;">Pengguna Baru</h3>
               </div>
             </div>
-          </div>
         </div>
-        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
-          <div class="row g-0">
-            <div class="col-md-4 text-center">
-              <i class = "fa fa-address-book" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><?= $total_driver[0]["jumlah_driver"]; ?></h5>
-                <p class="card-text">Driver</p>
+        <div class="col-4 sm-3" style=" width:20%;">
+            <div class="row" style="padding-bottom: 3%;">
+              <div class="col card-body shadow" style="border-radius:20px; padding:15%; background-color:rgba(252,124,54,0.8690826672465861)">
+                <h5 class="card-title fs-1 fw-bolder text-center"><?= $total_pelanggan[0]["jumlah_pelanggan"]; ?></h5>
+                <h3 class="card-text fs-4 text-center" style=" padding-top:1vh;">Total Pengguna</h3>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
-          <div class="row g-0">
-            <div class="col-md-4 text-center">
-              <i class = "fa fa-address-book-o" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><?= $total_helper[0]["jumlah_helper"]; ?></h5>
-                <p class="card-text">Helper</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-      </div>
-      <div class="row">
-        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
-          <div class="row g-0">
-            <div class="col-md-4 text-center">
-              <i class = "fa fa-bar-chart" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><?= $request_peminjaman[0]["request_peminjaman"]; ?></h5>
-                <p class="card-text">Request Peminjaman</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
-          <div class="row g-0">
-            <div class="col-md-4 text-center">
-              <i class = "fa fa-clock-o" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><?= $menunggu_pembayaran[0]["menunggu_pembayaran"]; ?></h5>
-                <p class="card-text">Menunggu Pembayaran</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
-          <div class="row g-0">
-            <div class="col-md-4 text-center">
-              <i class = "fa fa-credit-card-alt" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><?= $pembayaran_baru[0]["pembayaran_baru"]; ?></h5>
-                <p class="card-text">Pembayaran Baru</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
-          <div class="row g-0">
-            <div class="col-md-4 text-center">
-              <i class = "fa fa-calendar-check-o" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><?= $total_peminjaman[0]["total_peminjaman"]; ?></h5>
-                <p class="card-text">Total Peminjaman</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
-          <div class="row g-0">
-            <div class="col-md-4 text-center">
-              <i class = "fa fa fa-truck" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><?= $total_model_kendaraan[0]["total_model_kendaraan"]; ?></h5>
-                <p class="card-text">Model Pickup/Truk</p>
-              </div>
+
+      <div class="row gx-4 row-cols-3 justify-content-evenly align-items-center shadow mx-auto" style="margin:3%; max-width:70%; padding:3%; background-color:rgba(0,3,51,0.7660014689469538); border-radius:30px;">
+        <div class="col-4 sm-3" style="width:20%;" >
+          <div class="row" style="padding-bottom: 3%;">
+            <div class="card-body ">
+              <h5 class="card-title text-center"><i class="fa fa-briefcase" aria-hidden="true" style="font-size:5vw; color:white;"></i></h5>
+              <h3 class="card-text fs-3 text-center" style=" padding-top:1vh; color:white;">PEGAWAI</h3>
             </div>
           </div>
         </div>
-        <div class="col-xxl-3 card mb-3" style="max-width: 330px;">
-          <div class="row g-0">
-            <div class="col-md-4 text-center">
-              <i class = "fa fa fa-truck" style="line-height: 88px; font-size: 3rem; color: blue;" data-bs-toggle="modal" data-bs-target="#ModalForm"></i>
-            </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h5 class="card-title"><?= $total_unit_kendaraan[0]["total_unit_kendaraan"]; ?></h5>
-                <p class="card-text">Unit Pickup/Truk</p>
+        <div class="col-4 sm-3" style="width:20%;">
+            <div class="row" style="padding-bottom: 3%;">
+              <div class="col card-body shadow" style="border-radius:20px; padding:15%; background-color:rgba(252,124,54,0.8690826672465861);">
+                <h5 class="card-title fs-1 fw-bolder text-center"><?= $total_driver[0]["jumlah_driver"]; ?></h5>
+                <h3 class="card-text fs-4 text-center" style=" padding-top:1vh;">Driver</h3>
               </div>
             </div>
+        </div>
+        <div class="col-4 sm-3" style=" width:20%;">
+            <div class="row" style="padding-bottom: 3%;">
+              <div class="col card-body shadow" style="border-radius:20px; padding:15%; background-color:rgba(252,124,54,0.8690826672465861)">
+                <h5 class="card-title fs-1 fw-bolder text-center"><?= $total_helper[0]["jumlah_helper"]; ?></h5>
+                <h3 class="card-text fs-4 text-center" style=" padding-top:1vh;">Helper</h3>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="row gx-4 row-cols-3 justify-content-evenly align-items-center shadow mx-auto" style="margin:3%; max-width:70%; padding:3%; background-color:rgba(0,3,51,0.7660014689469538); border-radius:30px;">
+        <div class="col-4 sm-3" style="width:20%;" >
+          <div class="row" style="padding-bottom: 3%;">
+            <div class="card-body ">
+              <h5 class="card-title text-center"><i class="fa fa-truck" aria-hidden="true" style="font-size:6vw; color:white;"></i></h5>
+              <h3 class="card-text fs-3 text-center" style=" padding-top:1vh; color:white;">PEMINJAMAN</h3>
+            </div>
           </div>
+        </div>
+        <div class="col-4 sm-3" style="width:20%;">
+            <div class="row" style="padding-bottom: 3%;">
+              <div class="col card-body shadow" style="border-radius:20px; padding:15%; background-color:rgba(252,124,54,0.8690826672465861);">
+                <h5 class="card-title fs-1 fw-bolder text-center"><?= $request_peminjaman[0]["request_peminjaman"]; ?></h5>
+                <h3 class="card-text fs-4 text-center" style=" padding-top:1vh;">Request Peninjaman</h3>
+              </div>
+            </div>
+        </div>
+        <div class="col-4 sm-3" style=" width:20%;">
+            <div class="row" style="padding-bottom: 3%;">
+              <div class="col card-body shadow" style="border-radius:20px; padding:15%; background-color:rgba(252,124,54,0.8690826672465861)">
+                <h5 class="card-title fs-1 fw-bolder text-center"><?= $total_peminjaman[0]["total_peminjaman"]; ?></h5>
+                <h3 class="card-text fs-4 text-center" style=" padding-top:1vh;">Total Peminjaman</h3>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="row gx-4 row-cols-3 justify-content-evenly align-items-center shadow mx-auto" style="margin:3%; max-width:70%; padding:3%; background-color:rgba(0,3,51,0.7660014689469538); border-radius:30px;">
+        <div class="col-4 sm-3" style="width:20%;" >
+          <div class="row" style="padding-bottom: 3%;">
+            <div class="card-body ">
+              <h5 class="card-title text-center"><i class="fa fa-credit-card-alt" aria-hidden="true" style="font-size:5vw; color:white;"></i></h5>
+              <h3 class="card-text fs-3 text-center" style=" padding-top:1vh; color:white;">PEMBAYARAN</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-4 sm-3" style="width:20%;">
+            <div class="row" style="padding-bottom: 3%;">
+              <div class="col card-body shadow" style="border-radius:20px; padding:15%; background-color:rgba(252,124,54,0.8690826672465861);">
+                <h5 class="card-title fs-1 fw-bolder text-center"><?= $menunggu_pembayaran[0]["menunggu_pembayaran"]; ?></h5>
+                <h3 class="card-text fs-4 text-center" style=" padding-top:1vh;">Menunggu Pembayaran</h3>
+              </div>
+            </div>
+        </div>
+        <div class="col-4 sm-3" style=" width:20%;">
+            <div class="row" style="padding-bottom: 3%;">
+              <div class="col card-body shadow" style="border-radius:20px; padding:15%; background-color:rgba(252,124,54,0.8690826672465861)">
+                <h5 class="card-title fs-1 fw-bolder text-center"><?= $pembayaran_baru[0]["pembayaran_baru"]; ?></h5>
+                <h3 class="card-text fs-4 text-center" style=" padding-top:1vh;">Pembayaran Baru</h3>
+              </div>
+            </div>
         </div>
       </div>
     </div>
+    
     
     <!-- JAVASCRIPT --> 
     <script type="text/javascript">

@@ -19,7 +19,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="styling.css">
-    <title>Hello, world!</title>
+    <link rel="icon" href="Images/Logo/logo_square.png" type="image/x-icon" />
+    <title>Pick N Go</title>
 </head>
 <body>
     <input type="checkbox" id="hamburger-menu">
@@ -44,7 +45,7 @@
   	</div>
 
     <div class = "content">
-        <div class="row card-container">
+    <div class="row card-container">
             <?php foreach ($tuples as $tuple): ?>
                     <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 shadow">
                         <div class="row g-0">
@@ -53,7 +54,11 @@
                             </div>
                             <div class="col-md-7">
                                 <div class="card-body">
-                                    <p class="card-text">Model Kendaraan: <?= $tuple["model"] ?></p>
+                                    <?php if($tuple["model"] != NULL): ?>
+                                      <p class="card-text">Model Kendaraan: <?= $tuple["model"] ?></p>
+                                    <?php else: ?>
+                                      <p class="card-text">Model Kendaraan: NULL</p>
+                                    <?php endif;?>
                                     <?php if($tuple["plat_nomor"] != NULL): ?>
                                         <p class="card-text">Plat Nomor Kendaraan: <?= $tuple["plat_nomor"] ?></p>
                                     <?php else: ?>
@@ -61,7 +66,6 @@
                                     <?php endif;?>
                                     <p class="card-text">Tanggal Peminjaman: <?= $tuple["tanggal_peminjaman"] ?></p>
                                     <p class="card-text">Tanggal Pengembalian: <?= $tuple["tanggal_pengembalian"] ?></p>
-                                    <p class="card-text">Total Harga Peminjaman: Rp<?= $tuple["harga_peminjaman"] ?></p>
                                     <p class="card-text">Realisasi Tanggal Pengembalian: <?= $tuple["tanggal_pengembalian_sebenarnya"] ?></p>
                                     <p class="card-text">Denda Per Hari: Rp<?= $tuple["denda_per_hari"] ?></p>
                                     <p class="card-text">Total Biaya Denda Keterlambatan: Rp<?= $tuple["jumlah_denda"] ?></p>

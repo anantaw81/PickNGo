@@ -28,7 +28,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="styling.css">
-    <title>Hello, world!</title>
+    <link rel="icon" href="Images/Logo/logo_square.png" type="image/x-icon" />
+    <title>Pick N Go</title>
   </head>
   <body>
     <input type="checkbox" id="hamburger-menu">
@@ -81,7 +82,7 @@
           <?php unset($_SESSION["request-status"]); ?>
         <?php elseif(isset($_SESSION["request-status"]) && $_SESSION["request-status"] === 0): ?>
             <div class="col-xxl-12 mt-5 col-md-8 col-sm-10 col-lg-10 col-9 alert alert-danger alert-dismissible fade show mx-auto" role="alert">
-                Akun anda belum valid! Tunggu admin untuk memvalidasi akun anda!
+                Akun anda belum valid! Harap menunggu admin untuk memvalidasi akun anda!
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
           <?php unset($_SESSION["request-status"]); ?>
@@ -102,6 +103,7 @@
                   <li>Bagi peminjaman yang tidak menggunakan jasa driver dan helper, kendaraan akan dipinjamkan secara lepas kunci. Sehingga, pastikan bahwa anda membawa sim anda ke kantor Pick N Go saat akan mengambil kendaraan pinjaman anda.</li>
                   <li>Bagi peminjaman yang menggunakan jasa driver dan helper, kendaraan akan diantarkan ke alamat yang anda berikan pada proses registrasi. Sehingga pastikan alamat tersebut adalah alamat tempat kendaraan akan diantarkan. </li>
                   <li>Bagi peminjaman yang menggunakan jasa driver dan helper, kendaraan akan diantarkan ke lokasi anda pada pukul 08.00 WITA dan layanan dapat digunakan hingga pukul 17.00 WITA.</li>
+                  <li>Harga peminjaman seorang driver adalah Rp<?= $harga_driver ?>/Hari dan helper Rp<?= $harga_helper ?>/Hari</li>
                 </ol>
                 
             </div>
@@ -126,7 +128,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="helper" class="form-label">Jumlah Helper</label>
-                    <input type="number" value="0" class="form-control" id="helper" max="2" required>
+                    <input type="number" value="0" class="form-control" id="helper" min="0" max="2" required>
                 </div>
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="ketentuan" required>

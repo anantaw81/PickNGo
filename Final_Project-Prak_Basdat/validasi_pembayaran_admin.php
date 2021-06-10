@@ -30,9 +30,9 @@
   }
 
   if(isset($_POST["submit-pembayaran-tidak-valid"])){
-    $payment_validation_status = payment_validation($_POST["ID-pembayaran-tidak-valid"], 'not valid payment');
-    if (isset($payment_validation_status)) {
-        if ($payment_validation_status === true) {
+    $payment_validation_tidak_valid_status = payment_validation($_POST["ID-pembayaran-tidak-valid"], 'not valid payment');
+    if (isset($payment_validation_tidak_valid_status)) {
+        if ($payment_validation_tidak_valid_status === true) {
           $_SESSION["bool_status_payment_not_valid"] = true;
         } else {
           $_SESSION["bool_status_payment_not_valid"] = false;
@@ -55,7 +55,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="styling.css">
-    <title>Hello, world!</title>
+    <link rel="icon" href="Images/Logo/logo_square.png" type="image/x-icon" />
+    <title>Pick N Go</title>
 </head>
 <body>
     <input type="checkbox" id="hamburger-menu">
@@ -84,14 +85,14 @@
 
     <div class = "content">
       <div class="row card-container">
-            <?php if(isset($_SESSION["bool_status_payment_validation"]) && $_SESSION["bool_status_payment_validation"] === true ||isset($_SESSION["bool_status_payment_not_valid"]) && $_SESSION["bool_status_payment_not_valid"] === true): ?>
+            <?php if((isset($_SESSION["bool_status_payment_validation"]) && $_SESSION["bool_status_payment_validation"] == true) || (isset($_SESSION["bool_status_payment_not_valid"]) && $_SESSION["bool_status_payment_not_valid"] == true)): ?>
             <div class="mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1  alert alert-success alert-dismissible fade show mx-auto" role="alert">
               Validasi pembayaran berhasil dilakukan!
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <?php unset($_SESSION["bool_status_payment_not_valid"]); ?>
             <?php unset($_SESSION["bool_status_payment_validation"]); ?>
-          <?php elseif(isset($_SESSION["bool_status_payment_validation"]) && $_SESSION["bool_status_payment_validation"] === false || isset($_SESSION["bool_status_payment_not_valid"]) && $_SESSION["bool_status_payment_not_valid"] === false): ?>
+          <?php elseif((isset($_SESSION["bool_status_payment_validation"]) && $_SESSION["bool_status_payment_validation"] == false) || (isset($_SESSION["bool_status_payment_not_valid"]) && $_SESSION["bool_status_payment_not_valid"] == false)): ?>
             <div class="mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1  alert alert-danger alert-dismissible fade show mx-auto" role="alert">
                 Validasi pembayaran tidak berhasil dilakukan!
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -130,7 +131,7 @@
                             <td><?= $tuple["tanggal_pengembalian"] ?></td>
                             <td><?= $tuple["harga_peminjaman"] ?></td>
                             <td><a class="btn btn-primary mx-1 mt-1 mb-1" href="#" role="button" onclick="showImg('<?= $tuple['gambar_bukti_pembayaran'] ?>')">Lihat</a><a class="btn btn-success mx-1 mt-1 mb-1" href="#" role="button" onclick="showAcceptModal('<?= $tuple['ID_peminjaman'] ?>')">Terima</a>
-                            <a class="btn btn-danger mt-1 mb-1" href="#" role="button" onclick="showDeclineModal('<?= $tuple['ID_peminjaman'] ?>')">Tolak</a></td>
+                            <a class="btn btn-danger mt-1 mb-1" href="#" role="button" onclick="showDeclineModal(<?= $tuple['ID_peminjaman'] ?>)">Tolak</a></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -232,7 +233,7 @@
                   Apakah anda yakin bukti pembayaran ini valid?
               </p>
               <div class="form-group">
-                <label for="ID-pembayaran-valid" class="col-form-label d-none">ID Pembayaran</label>
+                <label for="ID-pembayaran-valid" class="col-form-label d-none">ID Peminjaman</label>
                 <input type="text" class="form-control d-none" id="ID-pembayaran-valid" name="ID-pembayaran-valid" readonly>
               </div>
               <div class="text-center mt-2">
@@ -260,7 +261,7 @@
                   Apakah anda yakin bukti pembayaran ini tidak valid?
               </p>
               <div class="form-group">
-                <label for="ID-pembayaran-tidak-valid" class="col-form-label d-none">ID Pembayaran</label>
+                <label for="ID-pembayaran-tidak-valid" class="col-form-label d-none">ID Peminjaman</label>
                 <input type="text" class="form-control d-none" id="ID-pembayaran-tidak-valid" name="ID-pembayaran-tidak-valid" readonly>
               </div>
               <div class="text-center mt-2">

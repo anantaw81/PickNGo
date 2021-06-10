@@ -31,7 +31,8 @@ if (isset($_POST["submit"])) {
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <link rel="icon" href="Images/Logo/logo_square.png" type="image/x-icon" />
+    <title>Pick N Go</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -41,9 +42,8 @@ if (isset($_POST["submit"])) {
         </button>
         <div class="collapse navbar-collapse ms-3" id="navbarTogglerDemo01">
             <ul class = "navbar-nav mx-auto">
-                <li class="nav-item me-5"><a class = "nav-link" href="">Mobil Pickup</a></li>
-                <li class="nav-item me-5"><a class = "nav-link" href="">Truk</a></li>
-                <li class="nav-item"><a class = "nav-link" href="">Hubungi Kita</a></li>
+              <li class="nav-item me-5"><a class = "nav-link" href="index.php#teratas">Pickup dan Truck</a></li>
+              <li class="nav-item"><a class = "nav-link" href="index.php#hubungi" >Hubungi Kami</a></li>
             </ul>
             <a class="btn btn-primary btn-dark me-3" href="form_registrasi.php" role="button">Signup</a>
             <a class="btn btn-primary btn-dark me-3" href="form_login.php" role="button">Login</a>

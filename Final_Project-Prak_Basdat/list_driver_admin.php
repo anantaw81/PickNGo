@@ -1,16 +1,8 @@
 <?php 
 	session_start();
 	require 'functions.php';
-  $jumlah_data_per_page = 2;
-  $jumlah_data = read("SELECT COUNT(*) AS jumlah_data FROM driver;");
-  $jumlah_page = ceil($jumlah_data[0]["jumlah_data"]/$jumlah_data_per_page);
-  if(isset($_GET["page_list_driver"])) {
-    $page_saat_ini = $_GET["page_list_driver"];
-  } else {
-    $page_saat_ini = 1;
-  }
-  $batas_bawah = $jumlah_data_per_page*$page_saat_ini-$jumlah_data_per_page;
-	$tuples = read("SELECT * FROM driver LIMIT $batas_bawah, $jumlah_data_per_page;");
+
+	$tuples = read("SELECT * FROM driver");
 	if(!isset($_SESSION["login_admin"])) {
 		header("location: form_login.php");
 		exit;
@@ -60,7 +52,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="styling.css">
-    <title>Hello, world!</title>
+    <link rel="icon" href="Images/Logo/logo_square.png" type="image/x-icon" />
+    <title>Pick N Go</title>
   </head>
   <body>
   	<input type="checkbox" id="hamburger-menu">
@@ -169,41 +162,6 @@
           </div>
         <?php endforeach; ?>
       </div>
-      <div class="row mx-auto ms-5 ps-5">
-          <nav aria-label="Page navigation example" class="pagination-button" style="background-color: white;">
-            <ul class="pagination pagination-sm offset-xxl-4" style="background-color: white;">
-              <?php if($page_saat_ini == 1): ?>
-                <li class="page-item disabled">
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                  </a>
-                </li>
-              <?php else: ?>
-                <li class="page-item">
-                  <a class="page-link" href="list_driver_admin.php?page_list_driver=<?= $page_saat_ini-1; ?>" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                  </a>
-                </li>
-              <?php endif;?>
-              <?php for($i=1; $i<=$jumlah_page; $i++):?>
-                <li class="page-item"><a class="page-link" href="list_driver_admin.php?page_list_driver=<?= $i; ?>"><?= $i ?></a></li>
-              <?php endfor;?>
-              <?php if($page_saat_ini == $jumlah_page): ?>
-                <li class="page-item disabled">
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                  </a>
-                </li>
-              <?php else: ?>
-                <li class="page-item">
-                  <a class="page-link" href="list_driver_admin.php?page_list_driver=<?= $page_saat_ini+1; ?>" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                  </a>
-                </li>
-              <?php endif;?>
-            </ul>
-          </nav>
-        </div>
     </div>
     <script type="text/javascript">
       function updateData(id, nama, jenis_kelamin, tarif, nama_foto){

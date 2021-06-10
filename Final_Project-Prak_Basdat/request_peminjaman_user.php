@@ -45,7 +45,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="styling.css">
-    <title>Hello, world!</title>
+    <link rel="icon" href="Images/Logo/logo_square.png" type="image/x-icon" />
+    <title>Pick N Go</title>
 </head>
 <body>
     <input type="checkbox" id="hamburger-menu">
@@ -108,11 +109,11 @@
                 <?php if($tuple["status_peminjaman"] === "not accepted yet"):?>
                     <?php $status = "Tunggu Persetujuan";?>
                 <?php elseif($tuple["status_peminjaman"] === "accepted"):?>
-                    <?php $status = "Disetujui! Unggah bukti pembayaran anda!";?>
+                    <?php $status = "Disetujui! Lakukan pembayaran ke 08018282 (BCA) A.N. Alim Ikegami, unggah bukti pembayaran anda!";?>
                 <?php elseif($tuple["status_peminjaman"] === "rejected"):?>
                     <?php $status = "Ditolak!";?>
                     <?php elseif($tuple["status_peminjaman"] === "not valid payment"):?>
-                    <?php $status = "Pembayaran tidak valid!!";?>
+                    <?php $status = "Pembayaran tidak valid! Perbaharui unggahan pembayaran!";?>
                 <?php endif;?>
                 <?php if($tuple["status_peminjaman"] === "not accepted yet"):?>
                     <div class="card mb-3 mt-5 col-xxl-10 offset-xxl-1 col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-10 offset-sm-1 col-10 offset-1 shadow">
@@ -146,7 +147,6 @@
                                     <p class="card-text">Driver: <?= $tuple["opsi_driver"] ?></p>
                                     <p class="card-text">Jumlah Helper: <?= $tuple["jumlah_helper"] ?></p>
                                     <p class="card-text">Status: <?= $status ?> </p>
-                                    <p class="card-text">Total Harga: Rp<?= $tuple["harga_peminjaman"] ?></p>
                                     <p class="card-text">Keterangan penolakan: <?= $tuple["keterangan"] ?></p>
                                 </div>
                             </div>

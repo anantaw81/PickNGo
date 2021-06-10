@@ -2,9 +2,18 @@
 	session_start();
 	require 'functions.php';
   $id_model = $_GET['p_k_model'];
-  $query = "SELECT * FROM tipe_kendaraan WHERE ID_model = $id_model";
+  $query = "SELECT * FROM tipe_kendaraan WHERE ID_model = $id_model;";
   $model_data = read($query);
-  $query = "SELECT * FROM (unit_kendaraan INNER JOIN tipe_kendaraan ON unit_kendaraan.ID_model = tipe_kendaraan.ID_model) WHERE unit_kendaraan.ID_model = $id_model;";
+  $jumlah_data_per_page = 5;
+  $jumlah_data = read("SELECT COUNT(*) AS jumlah_data FROM (unit_kendaraan INNER JOIN tipe_kendaraan ON unit_kendaraan.ID_model = tipe_kendaraan.ID_model) WHERE unit_kendaraan.ID_model = $id_model;");
+  $jumlah_page = ceil($jumlah_data[0]["jumlah_data"]/$jumlah_data_per_page);
+  if(isset($_GET["page_unit_kendaraan"])) {
+    $page_saat_ini = $_GET["page_unit_kendaraan"];
+  } else {
+    $page_saat_ini = 1;
+  }
+  $batas_bawah = $jumlah_data_per_page*$page_saat_ini-$jumlah_data_per_page;
+  $query = "SELECT * FROM (unit_kendaraan INNER JOIN tipe_kendaraan ON unit_kendaraan.ID_model = tipe_kendaraan.ID_model) WHERE unit_kendaraan.ID_model = $id_model LIMIT $batas_bawah, $jumlah_data_per_page;";
 	$tuples = read($query);
 	if(!isset($_SESSION["login_admin"])) {
 		header("location: form_login.php");
@@ -19,7 +28,7 @@
         } else {
           $_SESSION["bool_status_insert"] = false;
         }
-        header("location: unit_kendaraan_admin.php?p_k_model=$id_model;");
+        header("location: unit_kendaraan_admin.php?p_k_model=$id_model&;");
         exit;
       }
   }
@@ -32,7 +41,7 @@
         } else {
           $_SESSION["bool_status_update"] = false;
         }
-        header("location: unit_kendaraan_admin.php?p_k_model=$id_model;");
+        header("location: unit_kendaraan_admin.php?p_k_model=$id_model&;");
         exit;
       }
   }
@@ -45,7 +54,7 @@
         } else {
           $_SESSION["bool_status_delete"] = false;
         }
-        header("location: unit_kendaraan_admin.php?p_k_model=$id_model;");
+        header("location: unit_kendaraan_admin.php?p_k_model=$id_model&;");
         exit;
       }
   }
@@ -61,7 +70,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="styling.css">
-    <title>Hello, world!</title>
+    <link rel="icon" href="Images/Logo/logo_square.png" type="image/x-icon" />
+    <title>Pick N Go</title>
   </head>
   <body>
   	<input type="checkbox" id="hamburger-menu">
@@ -83,7 +93,7 @@
   		<a href="request_peminjaman_admin.php"><i class = "fa fa-hourglass"></i><span>Request Peminjaman</span></a>
   		<a href="validasi_user_admin.php"><i class = "fa fa-check-circle"></i><span>Validasi Pengguna</span></a>
       <a href="validasi_pembayaran_admin.php"><i class = "fa fa-money"></i><span>Validasi Pembayaran</span></a>
-  		<a href="list_peminjaman_admin"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
+  		<a href="list_peminjaman_admin.php"><i class = "fa fa-list"></i><span>List Peminjaman</span></a>
       <a href="list_pengembalian_admin.php"><i class = "fa fa-list-alt"></i><span>List Pengembalian</span></a>
   		<a href="" class = "logout" data-bs-toggle="modal" data-bs-target="#modalLogout"><span>Logout</span></a>
   	</div>
@@ -172,7 +182,41 @@
             <?php endforeach; ?>
           </tbody>
         </table>
-
+        <div class="row mx-auto">
+          <nav aria-label="Page navigation example" class="pagination-button" style="background-color: white;">
+            <ul class="pagination pagination-sm offset-xxl-4" style="background-color: white;">
+              <?php if($page_saat_ini == 1): ?>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+              <?php else: ?>
+                <li class="page-item">
+                  <a class="page-link" href="unit_kendaraan_admin.php?p_k_model=<?= $id_model; ?>&page_unit_kendaraan=<?= $page_saat_ini-1; ?>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+              <?php endif;?>
+              <?php for($i=1; $i<=$jumlah_page; $i++):?>
+                <li class="page-item"><a class="page-link" href="unit_kendaraan_admin.php?p_k_model=<?= $id_model; ?>&page_unit_kendaraan=<?= $i; ?>"><?= $i ?></a></li>
+              <?php endfor;?>
+              <?php if($page_saat_ini == $jumlah_page): ?>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              <?php else: ?>
+                <li class="page-item">
+                  <a class="page-link" href="unit_kendaraan_admin.php?p_k_model=<?= $id_model; ?>&page_unit_kendaraan=<?= $page_saat_ini+1; ?>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              <?php endif;?>
+            </ul>
+          </nav>
+        </div>
       </div>
       
     </div>
